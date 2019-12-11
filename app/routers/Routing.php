@@ -4,6 +4,8 @@ use League\Route\Router;
 use Controller\{
     BaseController,
     TasksController,
+    AdminController,
+    AuthController,
 };
 
 $requestDispatcher = \Zend\Diactoros\ServerRequestFactory::fromGlobals (
@@ -15,9 +17,21 @@ $router = new Router;
  * Routers list
  */
 $router->map ('GET', '/', [BaseController::class, 'index']);
-$router->group('/tasks', function (\League\Route\RouteGroup $route) {
-    $route->map('GET', '/', [TasksController::class, 'index']);
-    $route->map('GET', '/{id}', [TasksController::class, 'edit']);
+/** Tasks */
+$router->group ('/tasks', function (\League\Route\RouteGroup $route) {
+    $route->map ('GET', '/', [TasksController::class, 'index']);
+    $route->map ('GET', '/{id}', [TasksController::class, 'edit']);
+});
+
+/** Admin */
+$router->group ('/admin', function (\League\Route\RouteGroup $route) {
+    $route->map ('GET', '/', [AdminController::class, 'index']);
+});
+
+/** Auth */
+$router->group ('/auth', function (\League\Route\RouteGroup $route) {
+    $route->map ('GET', '/', [AuthController::class, 'login']);
+    $route->map ('GET', '/register', [AuthController::class, 'register']);
 });
 
 (new Zend\HttpHandlerRunner\Emitter\SapiEmitter)->emit ($router->dispatch ($requestDispatcher));

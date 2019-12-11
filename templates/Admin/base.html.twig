@@ -1,0 +1,40 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Admin{% endblock %}
+{% block footer %}{% endblock %}
+
+{% block content %}
+    {% block main %}{% endblock %}
+    <nav class="navbar fixed-bottom navbar-expand-sm navbar-dark bg-success" style="padding: 0px 10px;height: 30px;">
+        <a class="navbar-brand" href="#">
+            <i class="fa fa-cogs" aria-hidden="true"></i> Admin
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav">
+                <li class="nav-item dropup">
+                    <a class="nav-link dropdown-toggle" href="#" id="tasksMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Tasks
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="tasksMenu">
+                        <a class="dropdown-item" href="#">All</a>
+                        <a class="dropdown-item" href="#">Create tast</a>
+                    </div>
+                </li>
+            </ul>
+            <ul class="navbar-nav">
+                <li class="nav-item dropup">
+                    <a class="nav-link dropdown-toggle" href="#" id="usersMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Users
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="usersMenu">
+                        <a class="dropdown-item" href="#">All</a>
+                        <a class="dropdown-item" href="#">Create user</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </nav>
+{% endblock %}

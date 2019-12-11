@@ -1,0 +1,41 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Auth{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-4"></div>
+        <div class="col-md-4">
+            <form class="form-signin">
+                <div class="text-center mb-4">
+                    <h1 class="h3 mb-3 font-weight-normal">
+                        <a href="/auth">Auth</a> / Register
+                    </h1>
+                </div>
+
+                <div class="form-label-group">
+                    <label for="inputEmail">Email address</label>
+                    <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required="" autofocus="">
+                </div>
+
+                <div class="form-label-group">
+                    <label for="inputPassword">Password</label>
+                    <input type="password" id="inputPassword" class="form-control" placeholder="Password" required="">
+                </div>
+
+                <div class="form-label-group">
+                    <label for="inputPassword">Repeat password</label>
+                    <input type="password" id="inputPassword" class="form-control" placeholder="Repeat password" required="">
+                </div>
+
+                <div class="checkbox mb-3">
+                    <label>
+                    <input type="checkbox" value="remember-me"> Remember me
+                    </label>
+                </div>
+                <button class="btn btn-lg btn-primary btn-block" type="submit">Register</button>
+            </form>
+        </div>
+        <div class="col-md-4"></div>
+    </div>
+{% endblock %}
