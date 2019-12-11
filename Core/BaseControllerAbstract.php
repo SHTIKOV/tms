@@ -21,7 +21,7 @@ abstract class BaseControllerAbstract {
     }
 
     public function render (string $template, array $vars = []): ResponseInterface {
-        $this->response->getBody ()->write ($this->twig->render ($template, $vars));
+        $this->response->getBody ()->write ($this->twig->render ($template, array_merge ($vars, [])));
         return $this->response;
     }
 
