@@ -1,0 +1,4 @@
+# Managed by Composer
+/vendor/
+#node.js
+/node_modules
