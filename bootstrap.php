@@ -18,25 +18,25 @@ $entityManager = EntityManager::create (
     Setup::createAnnotationMetadataConfiguration ([__DIR__ . "/Entity"], $params['isDevMod'])
 );
 
-$helperSet = new HelperSet();
-$helperSet->set(new QuestionHelper(), 'question');
-$helperSet->set(new ConnectionHelper($entityManager->getConnection()), 'db');
-$helperSet->set(new EntityManagerHelper($entityManager), 'entityManager');
+$helperSet = new HelperSet ();
+$helperSet->set (new QuestionHelper (), 'question');
+$helperSet->set (new ConnectionHelper ($entityManager->getConnection ()), 'db');
+$helperSet->set (new EntityManagerHelper ($entityManager), 'entityManager');
 
-$cli = new Application('Doctrine Migrations');
-$cli->setCatchExceptions(true);
-$cli->setHelperSet($helperSet);
+$cli = new Application ('Doctrine Migrations');
+$cli->setCatchExceptions (true);
+$cli->setHelperSet ($helperSet);
 
-$cli->addCommands(array(
-    new Command\DiffCommand(),
-    new Command\DumpSchemaCommand(),
-    new Command\ExecuteCommand(),
-    new Command\GenerateCommand(),
-    new Command\LatestCommand(),
-    new Command\MigrateCommand(),
-    new Command\RollupCommand(),
-    new Command\StatusCommand(),
-    new Command\VersionCommand()
-));
+$cli->addCommands ([
+    new Command\DiffCommand (),
+    new Command\DumpSchemaCommand (),
+    new Command\ExecuteCommand (),
+    new Command\GenerateCommand (),
+    new Command\LatestCommand (),
+    new Command\MigrateCommand (),
+    new Command\RollupCommand (),
+    new Command\StatusCommand (),
+    new Command\VersionCommand ()
+]);
 
 $cli->run();

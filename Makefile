@@ -4,7 +4,7 @@ STAN_LEVEL=5
 
 .PHONY: analyze
 analyze:
-	$(STAN) analyse -l $(STAN_LEVEL) -c $(STAN_CONF) index.php Core Controller app
+	$(STAN) analyse -l $(STAN_LEVEL) -c $(STAN_CONF) index.php Core Entity Controller app
 
 .PHONY: doctrine
 doctrine:
