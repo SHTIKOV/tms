@@ -1,7 +1,10 @@
 <?php
 return [
-    'db_host' => '192.0.0.1',
-    'db_name' => 'tasks',
-    'db_username' => 'root',
-    'db_password' => '',
+    'db' => [
+        'driver'   => 'pdo_mysql',
+        'user'     => 'root',
+        'password' => '',
+        'dbname'   => 'tms',
+    ],
+    'isDevMod' => true
 ];
