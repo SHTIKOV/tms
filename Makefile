@@ -9,3 +9,7 @@ analyze:
 .PHONY: doctrine
 doctrine:
 	vendor/bin/doctrine
+
+.PHONY: migrations
+migrations:
+	vendor/bin/doctrine-migrations
