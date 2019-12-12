@@ -8,8 +8,7 @@ namespace Entity;
  * 
  * @author КОнстантин Штыков (SHTIKOV)
  */
-class User
-{
+class User implements \JsonSerializable {
     /** @Id @Column(type="integer") @GeneratedValue */
     private $id;
 
@@ -27,6 +26,20 @@ class User
      */
     private $email;
 
+    /** 
+     * @Column(type="string") 
+     * 
+     * @var string
+     */
+    private $password;
+
+    /** 
+     * @Column(type="string", nullable=true) 
+     * 
+     * @var string
+     */
+    private $token;
+
     /**
      * @Column(type="datetime")
      * 
@@ -40,7 +53,7 @@ class User
     }
 
 
-    public function getId (): int {
+    public function getId (): ?int {
         return $this->id;
     }
 
@@ -53,6 +66,15 @@ class User
         return $this;
     }
 
+    public function getPassword (): string {
+		return $this->password;
+	}
+
+	public function setPassword (string $password): User {
+		$this->password = $password;
+		return $this;
+	}
+
     public function getEmail (): string {
         return $this->name;
     }
@@ -60,5 +82,18 @@ class User
     public function setEmail (string $email): User {
         $this->email = $email;
         return $this;
+    }
+
+	public function getToken (): ?string {
+		return $this->token;
+	}
+
+	public function setToken (?string $token): User {
+		$this->token = $token;
+		return $this;
+    }
+    
+    public function jsonSerialize (): array {
+        return get_object_vars ($this);
     }
 }

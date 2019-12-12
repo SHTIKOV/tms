@@ -32,6 +32,8 @@ $router->group ('/admin', function (\League\Route\RouteGroup $route) {
 $router->group ('/auth', function (\League\Route\RouteGroup $route) {
     $route->map ('GET', '/', [AuthController::class, 'login']);
     $route->map ('GET', '/register', [AuthController::class, 'register']);
+    $route->map ('GET', '/check', [AuthController::class, 'check']);
+    $route->map ('GET', '/logout', [AuthController::class, 'logout']);
 });
 
 (new Zend\HttpHandlerRunner\Emitter\SapiEmitter)->emit ($router->dispatch ($requestDispatcher));
