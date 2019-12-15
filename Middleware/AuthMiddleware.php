@@ -27,7 +27,6 @@ class AuthMiddleware implements MiddlewareInterface {
             Setup::createAnnotationMetadataConfiguration (["/Entity"], $params['isDevMod'])
         );
         $user = (new UserModel ($em))->getUserByToken ($_COOKIE['token']);
-        dump (12312312);
         if (!in_array ($request->getUri ()->getPath (), self::UNAVAILABLE_PATHS_FOR_REDIRECT)) {
             return new RedirectResponse ('/404');
         }

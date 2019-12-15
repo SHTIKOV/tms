@@ -15,26 +15,26 @@ class AuthController extends \Core\BaseControllerAbstract {
         return new Response;
     }
 
+    public function loginPage (ServerRequestInterface $request): ResponseInterface {
+        return $this->render ('Auth/login.html.twig');
+    }
+
     public function login (ServerRequestInterface $request): ResponseInterface {
         $params = $request->getQueryParams ();
         $email = isset ($params['email']) ? $params['email'] : null;
         $password = isset ($params['password']) ? $params['password'] : null;
+        //dump ($params);
         if ($email && $password) {
             (new UserModel ($this->em))
                 ->login ($email, $password);
             $this->em->flush ();
 
             $this->redirectTo ('/auth/check');
+        } else {
+            throw new NotFoundException ('User not found');
         }
 
-        $messagses = [];
-        if (count ($params)) {
-            $messagses[] = 'Please check your entries';
-        }
-
-        return $this->render ('Auth/login.html.twig', [
-            'messages' => $messagses
-        ]);
+        return $params;
     }
 
     public function check (ServerRequestInterface $request): ResponseInterface {

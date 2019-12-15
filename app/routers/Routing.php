@@ -75,7 +75,8 @@ $router->group ('/tasks', function (\League\Route\RouteGroup $route) {
 
 /** Auth */
 $router->group ('/auth', function (\League\Route\RouteGroup $route) {
-    $route->map ('GET', '/', [AuthController::class, 'login']);
+    $route->map ('GET', '/', [AuthController::class, 'loginPage']);
+    $route->map ('GET', '/login', [AuthController::class, 'login']);
     $route->map ('GET', '/register', [AuthController::class, 'register']);
     $route->map ('GET', '/check', [AuthController::class, 'check']);
     $route->map ('GET', '/logout', [AuthController::class, 'logout']);
