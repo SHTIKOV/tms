@@ -15,11 +15,13 @@ class TaskModel {
     }
 
     public function edit (array $data): Task {
+        $isEdit = false;
         if (!isset ($data['id']) || !$data['id']) {
             $task = new Task ();
         } else {
             $task = $this->em->getRepository (Task::class)
                 ->find ($data['id']);
+            $isEdit = true;
         }
 
         if (isset ($data['email'])) {
@@ -29,17 +31,27 @@ class TaskModel {
         if (isset ($data['username'])) {
             $task->setUsername ($data['username']);
         }
+        
+        if (isset ($data['description'])) {
+            $task->setDescription ($data['description']);
+        }
 
         if (isset ($data['status'])) {
             $task->setStatus ($data['status']);
         }
 
-        if ((new UserModel ($this->em))->check ($_COOKIE)) {
-            $task->setStatus (true);
+        if ($isEdit) {
+            $task->setIsEdited (true);
         }
             
         $this->em->persist ($task);
         return $task;
+    }
+
+    public function remove (int $id): void {
+        $task = $this->em->getRepository (\Entity\Task::class)
+            ->find ($id);
+        $this->em->remove ($task);
     }
 
     public function get (array $data = []): array {

@@ -1,0 +1,107 @@
+<script>
+        const TASKS_LIST = {{ tasks | json_encode | raw }};
+        const TASK_STATUS_LIST = ['planned', 'work', 'closed'];
+        
+        function Task (data = {}) {
+            let self = this,
+                def = {
+                    username: "",
+                    description: "",
+                    email: "",
+                    id: null,
+                    isEdited: false,
+                    status: "",
+                    created: "",
+                };
+
+            ko.mapping.fromJS ($.extend (def, data), {}, self);
+
+            self.edit = function () {
+                viewModel.editModel.show ({
+                    title: `Edit task: ${self.id ()}`,
+                    template: 'task-edit-modal',
+                    onSave: self.save,
+                    onValidate: self.validate,
+                    data: self,
+                });
+            }
+
+            self.save = function () {
+                $.ajax ({
+                    type:   "GET",
+                    url:    "/tasks/edit",
+                    cache:  false,
+                    data:   ko.mapping.toJS (self),
+                    success: function (task) {
+                        console.log (task);
+                        task = JSON.parse (String (task));
+                        console.log (task);
+                        noty ('Task saved', 'success');
+                        if (!self.id ()) {
+                            self.id (task.id);
+                            self.isEdited (task.isEdited);
+                            viewModel.tasks.push (self);
+                        }
+                    },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        noty ("Can't save task", "error");
+                    }
+                });
+            }
+
+            self.remove = function () {
+                noty (
+                    'Are you shure wanna remove this task?', 
+                    'warning', 
+                    [
+                        Noty.button ('Yes', 'btn btn-danger', function () {
+                            $.ajax ({
+                                type:   "GET",
+                                url:    "/tasks/remove",
+                                cache:  false,
+                                data:   {id: self.id ()},
+                                success: function () {
+                                    noty ('Task removed', 'success');
+                                    viewModel.tasks.remove (self);
+                                },
+                                error: function (xhr, ajaxOptions, thrownError) {
+                                    noty (thrownError, "error");
+                                }
+                            });
+                        }, {id: 'yes', 'data-status': 'ok'})
+                    ],
+                    false
+                );
+            }
+
+            self.validate = function () {
+                {# noty ('Check that the form is filled in correctly', 'warning'); #}
+                return true;
+            }
+        }
+
+        function ViewModel () {
+            let self = this;
+
+            self.tasks = ko.observableArray ();
+            self.editModel = new ModelEditor ();
+
+            self.addTask = function () {
+                let task = new Task ();
+                self.editModel.show ({
+                    title: 'Add task',
+                    template: 'task-edit-modal',
+                    onSave: task.save,
+                    data: task,
+                    onValidate: task.validate,
+                });
+            }
+
+            TASKS_LIST.forEach (task => {
+                self.tasks.push (new Task (task));
+            });
+        }
+
+        var viewModel = new ViewModel ();
+        ko.applyBindings (viewModel);
+    </script>
