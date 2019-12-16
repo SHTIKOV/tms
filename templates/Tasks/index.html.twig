@@ -1,41 +1,136 @@
 {% extends "base.html.twig" %}
 
 {% block title %}Tasks{% endblock %}
-{% block h1 %}Tasks{% endblock %}
+{% block h1 %}
+    Tasks <button type="button" class="btn btn-success" data-toggle="tooltip" title="Add task"
+                    data-bind="click: addTask">
+                <i class="fa fa-plus" aria-hidden="true"></i>
+            </button>
+{% endblock %}
 
 {% block content %}
+    <!-- ko with: editModel -->
+    {% include 'Components/ModelEditor.html.twig' %}
+    <!-- /ko -->
+    {% include 'Tasks/templates.html.twig' %}
+
     <div class="row">
         <div class="col-md-12">
             <table class="table table-striped">
                 <thead>
                     <tr>
                     <th scope="col">#</th>
-                    <th scope="col">Имя</th>
-                    <th scope="col">Фамилия</th>
-                    <th scope="col">Username</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Description</th>
+                    {% if isAuth() %}
+                    <th scope="col">Action</th>
+                    {% endif %}
                     </tr>
                 </thead>
                 <tbody>
+                    <!-- ko foreach: tasks -->
                     <tr>
-                        <th scope="row">1</th>
-                        <td>Mark</td>
-                        <td>Otto</td>
-                        <td>@mdo</td>
+                        <th>
+                            <b>1</b>
+                        </th>
+                        <td>
+                            <span class="badge badge-primary"
+                                data-bind="text: username">Username</span>
+                        </td>
+                        <td>
+                            <a class="badge badge-info"
+                                data-toggle="tooltip"
+                                data-bind="text: email,
+                                            attr: {
+                                                href: 'mailto:'+email(),
+                                                title: 'Mail to: '+email()
+                                            }">Email</a>
+                        </td>
+                        <td data-bind="text: description">Description</td>
+                        {% if isAuth() %}
+                        <td>
+                            <div class="btn-group" role="group">
+                                <button type="button" class="btn btn-warning" data-toggle="tooltip" title="Edit task"
+                                    data-bind="click: edit">
+                                    <i class="fa fa-cog" aria-hidden="true"></i>
+                                </button>
+                                <button type="button" class="btn btn-danger" data-toggle="tooltip" title="Remove task">
+                                    <i class="fa fa-trash" aria-hidden="true"></i>
+                                </button>
+                            </div>
+                        </td>
+                        {% endif %}
                     </tr>
-                    <tr>
-                        <th scope="row">2</th>
-                        <td>Jacob</td>
-                        <td>Thornton</td>
-                        <td>@fat</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">3</th>
-                        <td>Larry</td>
-                        <td>the Bird</td>
-                        <td>@twitter</td>
-                    </tr>
+                    <!-- /ko -->
                 </tbody>
             </table>
         </div>
     </div>
+{% endblock %}
+
+{% block javascript %}
+    <script>
+        const TASKS_LIST = {{ tasks | json_encode | raw }};
+        const TASK_STATUS_LIST = ['planned', 'work', 'closed'];
+        
+        function Task (data = {}) {
+            let self = this,
+                def = {
+                    username: "",
+                    description: "",
+                    email: "",
+                    id: 0,
+                    isEdited: false,
+                    status: "",
+                    created: "",
+                };
+
+            ko.mapping.fromJS ($.extend (def, data), {}, self);
+
+            self.edit = function () {
+                viewModel.editModel.show ({
+                    title: `Edit task: ${self.id ()}`,
+                    template: 'task-edit-modal',
+                    onSave: self.save,
+                    onValidate: self.validate,
+                    data: self,
+                });
+            }
+
+            self.save = function () {
+                viewModel.tasks.push (self);
+            }
+
+            self.validate = function () {
+                noty ('Check that the form is filled in correctly', 'warning');
+                return false;
+            }
+        }
+
+        function ViewModel () {
+            let self = this;
+
+            self.tasks = ko.observableArray ();
+            self.editModel = new ModelEditor ();
+
+            self.addTask = function () {
+                let task = new Task ();
+                self.editModel.show ({
+                    title: 'Add task',
+                    template: 'task-edit-modal',
+                    onSave: task.save,
+                    data: task,
+                    onValidate: task.validate,
+                });
+            }
+
+            TASKS_LIST.forEach (task => {
+                self.tasks.push (new Task (task));
+            });
+        }
+        
+        var viewModel = new ViewModel ();
+        ko.applyBindings (viewModel);
+    </script>
 {% endblock %}

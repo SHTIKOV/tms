@@ -4,11 +4,11 @@ namespace Entity;
 
 /**
  * @Entity
- * @Table(name="users")
+ * @Table(name="tasks")
  * 
  * @author Константин Штыков (SHTIKOV)
  */
-class User implements \JsonSerializable {
+class Task implements \JsonSerializable {
     /** @Id @Column(type="integer") @GeneratedValue */
     private $id;
 
@@ -17,7 +17,7 @@ class User implements \JsonSerializable {
      * 
      * @var string
      */
-    private $name;
+    private $username;
 
     /** 
      * @Column(type="string") 
@@ -31,14 +31,21 @@ class User implements \JsonSerializable {
      * 
      * @var string
      */
-    private $password;
+    private $description;
 
     /** 
-     * @Column(type="string", nullable=true) 
+     * @Column(type="string") 
      * 
      * @var string
      */
-    private $token;
+    private $status;
+
+    /** 
+     * @Column(type="boolean") 
+     * 
+     * @var bool
+     */
+    private $isEdited = false;
 
     /**
      * @Column(type="datetime")
@@ -57,23 +64,14 @@ class User implements \JsonSerializable {
         return $this->id;
     }
 
-    public function getName (): string {
-        return $this->name;
+    public function getUsername (): string {
+        return $this->username;
     }
 
-    public function setName (string $name): User {
-        $this->name = $name;
+    public function setUsername (string $username): User {
+        $this->username = $username;
         return $this;
     }
-
-    public function getPassword (): string {
-		return $this->password;
-	}
-
-	public function setPassword (string $password): User {
-		$this->password = $password;
-		return $this;
-	}
 
     public function getEmail (): string {
         return $this->name;
@@ -84,13 +82,31 @@ class User implements \JsonSerializable {
         return $this;
     }
 
-	public function getToken (): ?string {
-		return $this->token;
-	}
+    public function getDescription (): string {
+        return $this->description;
+    }
 
-	public function setToken (?string $token): User {
-		$this->token = $token;
-		return $this;
+    public function setDescription (string $description): User {
+        $this->description = $description;
+        return $this;
+    }
+
+    public function getStatus (): string {
+        return $this->status;
+    }
+
+    public function setStatus (string $status): User {
+        $this->status = $status;
+        return $this;
+    }
+
+    public function getIsEdited (): bool {
+        return $this->isEdited;
+    }
+
+    public function setIsEdited (bool $isEdited): User {
+        $this->isEdited = $isEdited;
+        return $this;
     }
     
     public function jsonSerialize (): array {

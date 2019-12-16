@@ -1,0 +1,30 @@
+<script type="text/html" id="task-edit-modal">
+    <!-- ko with: data -->
+    <form>
+        <div class="form-group">
+            <label>Username</label>
+            <input type="text" class="form-control" placeholder="The field is not filled"
+                data-bind="textInput: username">
+        </div>
+
+        <div class="form-group">
+            <label>Email</label>
+            <input type="text" class="form-control" placeholder="The field is not filled"
+                data-bind="textInput: email">
+        </div>
+
+        <div class="form-group">
+            <label for="inputAddress2">Description</label>
+            <textarea class="form-control" placeholder="The field is not filled" rows="5"
+                data-bind="textInput: description"></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="inputAddress2">Status</label>
+            <select class="custom-select" 
+                data-bind="options: TASK_STATUS_LIST,
+                            value: status"></select>
+        </div>
+    </form>
+    <!-- /ko -->
+</script>

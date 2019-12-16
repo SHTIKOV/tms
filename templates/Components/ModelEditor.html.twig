@@ -1,0 +1,72 @@
+<script type="text/html" id="modal-body">
+    This is empty modal
+</script>
+
+<div id="modal-editor" class="modal fade edit-task" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" data-bind="text: title">Edit task: #1</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body"
+                data-bind="template: { name: template, data: $data }">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary"
+                    data-bind="click: save">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function ModelEditor (data = {}) {
+        let self = this;
+
+        /** Default data */
+        data = $.extend ({
+            title: 'Edit',
+            template: 'modal-body',
+            data: {},
+            onSave: function () {},
+            onValidate: function () {return true;},
+        }, data);
+
+        /** Init */
+        self.title = ko.observable (data.title);
+        self.template = ko.observable (data.template);
+        self.data = ko.observable (data.data);
+        self.onSave = data.onSave;
+        self.onValidate = data.onValidate;
+
+        self.save = function () {
+            if (!self.onValidate ()) {
+                return;
+            }
+            self.onSave ();
+            $('#modal-editor').modal ('hide');
+        };
+
+        self.show = function (data = {}) {
+            data = $.extend ({
+                title: 'Edit',
+                template: 'modal-body',
+                data: {},
+                onSave: function () {},
+            }, data);
+
+            self.data (data.data);
+            self.onSave = data.onSave;
+            self.onValidate = data.onValidate;
+
+            self.title (data.title);
+            self.template (data.template);
+
+            $('#modal-editor').modal ('show');
+        }
+    }
+</script>
