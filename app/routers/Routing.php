@@ -70,7 +70,7 @@ $router->map ('GET', '/', [BaseController::class, 'index']);
 /** Tasks */
 $router->group ('/tasks', function (\League\Route\RouteGroup $route) {
     $route->map ('GET', '/', [TasksController::class, 'index']);
-    $route->map ('GET', '/{id}', [TasksController::class, 'edit']);
+    $route->map ('GET', '/edit', [TasksController::class, 'edit']);
 });
 
 /** Auth */

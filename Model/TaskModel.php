@@ -39,6 +39,7 @@ class TaskModel {
         }
             
         $this->em->persist ($task);
+        return $task;
     }
 
     public function get (array $data = []): array {

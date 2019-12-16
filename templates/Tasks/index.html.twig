@@ -100,7 +100,22 @@
             }
 
             self.save = function () {
-                viewModel.tasks.push (self);
+                $.ajax ({
+                    type:   "GET",
+                    url:    "/tasks/edit",
+                    cache:  false,
+                    data:   ko.mapping.toJS (self),
+                    success: function (response) {
+                        noty ('Task saved', 'success');
+                        if (!self.id ()) {
+                            viewModel.tasks.push (self);
+                        }
+                    },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        noty ("Can't save task", "error");
+                    }
+                });
+                
             }
 
             self.remove = function () {
@@ -117,8 +132,8 @@
             }
 
             self.validate = function () {
-                noty ('Check that the form is filled in correctly', 'warning');
-                return false;
+                {# noty ('Check that the form is filled in correctly', 'warning'); #}
+                return true;
             }
         }
 

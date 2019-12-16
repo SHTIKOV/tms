@@ -68,7 +68,7 @@ class Task implements \JsonSerializable {
         return $this->username;
     }
 
-    public function setUsername (string $username): User {
+    public function setUsername (string $username): Task {
         $this->username = $username;
         return $this;
     }
@@ -77,7 +77,7 @@ class Task implements \JsonSerializable {
         return $this->name;
     }
 
-    public function setEmail (string $email): User {
+    public function setEmail (string $email): Task {
         $this->email = $email;
         return $this;
     }
@@ -86,7 +86,7 @@ class Task implements \JsonSerializable {
         return $this->description;
     }
 
-    public function setDescription (string $description): User {
+    public function setDescription (string $description): Task {
         $this->description = $description;
         return $this;
     }
@@ -95,7 +95,7 @@ class Task implements \JsonSerializable {
         return $this->status;
     }
 
-    public function setStatus (string $status): User {
+    public function setStatus (string $status): Task {
         $this->status = $status;
         return $this;
     }
@@ -104,7 +104,7 @@ class Task implements \JsonSerializable {
         return $this->isEdited;
     }
 
-    public function setIsEdited (bool $isEdited): User {
+    public function setIsEdited (bool $isEdited): Task {
         $this->isEdited = $isEdited;
         return $this;
     }

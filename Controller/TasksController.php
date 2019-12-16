@@ -5,6 +5,7 @@ namespace Controller;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Model\TaskModel;
+use Zend\Diactoros\Response;
 
 class TasksController extends \Core\BaseControllerAbstract {
 
@@ -22,6 +23,7 @@ class TasksController extends \Core\BaseControllerAbstract {
 
         $this->em->flush ();
 
-        return $task->jsonSerialize ();
+        $this->response->getBody ()->write (json_encode ($task->jsonSerialize ()));
+        return $this->response;
     }
 }
