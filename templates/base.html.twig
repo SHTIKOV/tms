@@ -81,11 +81,12 @@
                 $('[data-toggle="tooltip"]').tooltip()
             })
 
-            function noty (text, type, timeout = 3000) {
+            function noty (text, type, buttons = [], timeout = 3000) {
                 new Noty ({
                     type: type,
                     text: text,
                     timeout: timeout,
+                    buttons: buttons,
                     theme: 'nest'
                 }).show();
             }

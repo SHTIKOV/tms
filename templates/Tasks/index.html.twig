@@ -55,7 +55,8 @@
                                     data-bind="click: edit">
                                     <i class="fa fa-cog" aria-hidden="true"></i>
                                 </button>
-                                <button type="button" class="btn btn-danger" data-toggle="tooltip" title="Remove task">
+                                <button type="button" class="btn btn-danger" data-toggle="tooltip" title="Remove task"
+                                    data-bind="click: remove">
                                     <i class="fa fa-trash" aria-hidden="true"></i>
                                 </button>
                             </div>
@@ -102,6 +103,19 @@
                 viewModel.tasks.push (self);
             }
 
+            self.remove = function () {
+                noty (
+                    'Are you shure wanna remove this task?', 
+                    'warning', 
+                    [
+                        Noty.button ('Yes', 'btn btn-danger', function () {
+                            // Remove action
+                        }, {id: 'yes', 'data-status': 'ok'})
+                    ],
+                    false
+                );
+            }
+
             self.validate = function () {
                 noty ('Check that the form is filled in correctly', 'warning');
                 return false;
@@ -129,7 +143,7 @@
                 self.tasks.push (new Task (task));
             });
         }
-        
+
         var viewModel = new ViewModel ();
         ko.applyBindings (viewModel);
     </script>
