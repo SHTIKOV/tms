@@ -3,7 +3,8 @@
 </script>
 
 <div id="modal-editor" class="modal fade edit-task" tabindex="-1" role="dialog">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-lg" role="document"
+        data-bind="css: { 'modal-lg': isLg, 'modal-xl': isXl, 'modal-sm': isSm }">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" data-bind="text: title">Edit task: #1</h5>
@@ -16,15 +17,17 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <!-- ko ifnot: hideSaveBtn -->
                 <button type="button" class="btn btn-primary"
                     data-bind="click: save">Save</button>
+                <!-- /ko -->
             </div>
         </div>
     </div>
 </div>
 
 <script>
-    function ModelEditor (data = {}) {
+    function ModalEditor (data = {}) {
         let self = this;
 
         /** Default data */
@@ -32,6 +35,10 @@
             title: 'Edit',
             template: 'modal-body',
             data: {},
+            hideSaveBtn: false,
+            isLg: false,
+            isXl: false,
+            isSm: false,
             onSave: function () {},
             onValidate: function () {return true;},
         }, data);
@@ -40,14 +47,21 @@
         self.title = ko.observable (data.title);
         self.template = ko.observable (data.template);
         self.data = ko.observable (data.data);
+        self.hideSaveBtn = ko.observable (data.hideSaveBtn);
         self.onSave = data.onSave;
         self.onValidate = data.onValidate;
+
+        self.isLg = ko.observable (data.isLg);
+        self.isXl = ko.observable (data.isXl);
+        self.isSm = ko.observable (data.isSm);
 
         self.save = function () {
             if (!self.onValidate ()) {
                 return;
             }
-            self.onSave ();
+            if (self.onSave !== false) {
+                self.onSave ();
+            }
             $('#modal-editor').modal ('hide');
         };
 
@@ -57,11 +71,20 @@
                 template: 'modal-body',
                 data: {},
                 onSave: function () {},
+                hideSaveBtn: false,
+                isLg: false,
+                isXl: false,
+                isSm: false,
             }, data);
 
             self.data (data.data);
+            self.hideSaveBtn (data.hideSaveBtn);
             self.onSave = data.onSave;
             self.onValidate = data.onValidate;
+
+            self.isLg (data.isLg);
+            self.isXl (data.isXl);
+            self.isSm (data.isSm);
 
             self.title (data.title);
             self.template (data.template);

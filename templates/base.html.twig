@@ -20,10 +20,10 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarCollapse">
                 <ul class="navbar-nav mr-auto">
-                    <li class="nav-item">
+                    <li class="nav-item {% if isCurrentRoute('/') %}active{% endif %}">
                         <a class="nav-link" href="/">Home</a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item {% if isCurrentRoute('/tasks') %}active{% endif %}">
                         <a class="nav-link" href="/tasks">Tasks</a>
                     </li>
                 </ul>
@@ -78,22 +78,25 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/knockout-validation/2.0.3/knockout.validation.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/knockout.mapping/2.4.1/knockout.mapping.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/noty/3.1.4/noty.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
         <script>
             $(function () {
-                $('[data-toggle="tooltip"]').tooltip()
+                $('[data-toggle="tooltip"]').tooltip ()
             })
 
             function noty (text, type, buttons = [], timeout = 3000) {
-                new Noty ({
+                let noty = new Noty ({
                     type: type,
                     text: text,
                     timeout: timeout,
                     buttons: buttons,
                     theme: 'nest'
-                }).show();
+                });
+                noty.show ();
+                return noty;
             }
 
-            ko.validation.init({
+            ko.validation.init ({
                 registerExtenders: true,
                 messagesOnModified: false,
                 parseInputAttributes: true,
@@ -102,6 +105,16 @@
                 decorateInputElement: true,
                 errorElementClass: 'is-invalid'
             }, true);
+
+            function UserModel () {
+                let self = this;
+
+                self.data = {{ user.jsonSerialize () | json_encode | raw }};
+
+                self.isMyEmail = email => self.data ? email == self.data.email : false
+            }
+
+            var userModel = new UserModel ();
         </script>
 
         {% block javascript %}{% endblock %}

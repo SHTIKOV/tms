@@ -93,7 +93,17 @@ class User implements \JsonSerializable {
 		return $this;
     }
     
+    public function getCreated (): \DateTime {
+        if (!($this->created instanceof \DateTime)) {
+            return new \DateTime ($this->created);
+        }
+
+        return $this->created;
+    }
+    
     public function jsonSerialize (): array {
-        return get_object_vars ($this);
+        $output = get_object_vars ($this);
+        $output['created'] = $this->getCreated ()->getTimestamp ();
+        return $output;
     }
 }

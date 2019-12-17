@@ -32,6 +32,9 @@ $twig->addFunction (new TwigFunction ('json_decode', json_decode));
 $twig->addFunction (new TwigFunction ('isAuth', function () use ($userModel) {
     return !is_null ($userModel->getUserByToken ($_COOKIE['token']));
 }));
+$twig->addFunction (new TwigFunction ('isCurrentRoute', function (string $route) {
+    return $_SERVER['REQUEST_URI'] == $route;
+}));
 
 /**
  * Dependency injections

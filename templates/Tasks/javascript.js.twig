@@ -1,5 +1,5 @@
 <script>
-        const DESCRIPTION_LENGTH = 120;
+        const DESCRIPTION_LENGTH = 80;
         const TASKS_LIST = {{ tasks | json_encode | raw }};
         const TASK_STATUS_LIST = ['planned', 'work', 'closed'];
         const TASK_STATUS_COLOR_LIST = {
@@ -43,17 +43,29 @@
                 },
             }, self);
 
+            self.createdDate = moment.unix (self.created ()).format ('MMMM Do YYYY, h:mm:ss a');
+
             self.errors = ko.validation.group (self);
 
             self.shortDescription = ko.pureComputed ({
                 read: () => {
                     let desc = self.description ();
                     return desc.length > DESCRIPTION_LENGTH 
-                        ? desc.slice (0, DESCRIPTION_LENGTH) + '...' 
+                        ? desc.slice (0, DESCRIPTION_LENGTH-3) + '...' 
                         : desc
                 },
                 owner: self
             });
+
+            self.showDescription = function () {
+                viewModel.editModel.show ({
+                    title: `Description task: ${self.id ()}`,
+                    template: 'task-show-description-modal',
+                    data: self,
+                    hideSaveBtn: true,
+                    isLg: true,
+                });
+            }
 
             {% if isAuth() %}
             self.edit = function () {
@@ -67,11 +79,12 @@
             }
 
             self.remove = function () {
-                noty (
+                let n = noty (
                     'Are you sure wanna remove this task?', 
                     'warning', 
                     [
                         Noty.button ('Yes', 'btn btn-danger', function () {
+
                             $.ajax ({
                                 type:   "GET",
                                 url:    "/tasks/remove",
@@ -80,6 +93,7 @@
                                 success: function () {
                                     noty ('Task removed', 'success');
                                     viewModel.tasks.remove (self);
+                                    n.close ();
                                 },
                                 error: function (xhr, ajaxOptions, thrownError) {
                                     noty (thrownError, "error");
@@ -127,7 +141,7 @@
             let self = this;
 
             self.tasks = ko.observableArray ();
-            self.editModel = new ModelEditor ();
+            self.editModel = new ModalEditor ();
 
             self.addTask = function () {
                 let task = new Task ();

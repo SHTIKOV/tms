@@ -39,3 +39,9 @@
     <div class="invalid-feedback" data-bind="validationMessage: field"
         style="display: block;"></div>
 </script>
+
+<script id="task-show-description-modal" type="text/html">
+    <!-- ko with: data -->
+    <p data-bind="text: description"></p>
+    <!-- /ko -->
+</script>

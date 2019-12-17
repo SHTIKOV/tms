@@ -11,7 +11,7 @@
 
 {% block templates %}
     <!-- ko with: editModel -->
-    {% include 'Components/ModelEditor.html.twig' %}
+    {% include 'Components/ModalEditor.html.twig' %}
     <!-- /ko -->
     {% include 'Tasks/templates.html.twig' %}
 {% endblock %}
@@ -27,15 +27,15 @@
                     <th scope="col">Email</th>
                     <th scope="col">Description</th>
                     <th scope="col" width="150px">Status</th>
-                    {% if isAuth() %}
+                    <th scope="col" width="150px">Cteated at</th>
                     <th scope="col" style="text-align: right;">Action</th>
-                    {% endif %}
                     </tr>
                 </thead>
                 <tbody>
                     <!-- ko foreach: tasks -->
-
-                    <tr>
+                    <tr data-toggle="tooltip" 
+                        data-bind="css: { 'table-warning': userModel.isMyEmail (email()) },
+                                    attr: { title: userModel.isMyEmail (email()) ? 'Your task' : '' }">
                         <th>
                             <b data-bind="text: id">ID</b>
                         </th>
@@ -57,9 +57,14 @@
                             <span class="badge badge-secondary">Edited</span>
                             <!-- /ko -->
                         </td>
-                        {% if isAuth() %}
+                        <td data-bind="text: createdDate">Created at</td>
                         <td align="right">
                             <div class="btn-group" role="group">
+                                <button type="button" class="btn btn-info" data-toggle="tooltip" title="Show task description"
+                                    data-bind="click: showDescription">
+                                    <i class="fa fa-eye" aria-hidden="true"></i>
+                                </button>
+                                {% if isAuth() %}
                                 <button type="button" class="btn btn-warning" data-toggle="tooltip" title="Edit task"
                                     data-bind="click: edit">
                                     <i class="fa fa-cog" aria-hidden="true"></i>
@@ -68,9 +73,9 @@
                                     data-bind="click: remove">
                                     <i class="fa fa-trash" aria-hidden="true"></i>
                                 </button>
+                                {% endif %}
                             </div>
                         </td>
-                        {% endif %}
                     </tr>
                     <!-- /ko -->
                 </tbody>
