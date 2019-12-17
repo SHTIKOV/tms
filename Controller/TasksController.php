@@ -5,6 +5,7 @@ namespace Controller;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Model\TaskModel;
+use Entity\Task;
 use League\Route\Http\Exception\BadRequestException;
 
 class TasksController extends \Core\BaseControllerAbstract {
@@ -13,7 +14,8 @@ class TasksController extends \Core\BaseControllerAbstract {
         $task = (new TaskModel ($this->em))
             ->get ($request->getQueryParams ());
         return $this->render ('Tasks/index.html.twig', [
-            'tasks' => $task
+            'tasks' => $task,
+            'defaultTask' => (new Task)->jsonSerialize (),
         ]);
     }
 

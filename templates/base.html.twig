@@ -23,11 +23,9 @@
                     <li class="nav-item">
                         <a class="nav-link" href="/">Home</a>
                     </li>
-                    {% if isAuth() %}
                     <li class="nav-item">
                         <a class="nav-link" href="/tasks">Tasks</a>
                     </li>
-                    {% endif %}
                 </ul>
                 <form class="form-inline mt-2 mt-md-0">
                     {% if isAuth() %}
@@ -41,7 +39,10 @@
                         </div>
                     </div>
                     {% else %}
-                    <a class="nav-link" href="/auth">Auth</a>
+                    <div class="btn-group">
+                        <a class="btn btn-outline-light" href="/auth">Auth</a>
+                        <a class="btn btn-outline-light" href="/auth/register">Register</a>
+                    </div>
                     {% endif %}
                 </form>
             </div>
@@ -63,7 +64,7 @@
                 <hr>
                 <div class="row">
                     <div class="col-md-12">
-                        <p>© SHTIKOV 2019</p>
+                        © SHTIKOV 2019 - <script type="text/javascript">document.write ((new Date).getFullYear ())</script>
                     </div>
                 </div>
             </div>
@@ -74,6 +75,7 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.5.0/knockout-min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/knockout-validation/2.0.3/knockout.validation.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/knockout.mapping/2.4.1/knockout.mapping.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/noty/3.1.4/noty.min.js"></script>
         <script>
@@ -90,6 +92,16 @@
                     theme: 'nest'
                 }).show();
             }
+
+            ko.validation.init({
+                registerExtenders: true,
+                messagesOnModified: false,
+                parseInputAttributes: true,
+                messageTemplate: null,
+                insertMessages: true,
+                decorateInputElement: true,
+                errorElementClass: 'is-invalid'
+            }, true);
         </script>
 
         {% block javascript %}{% endblock %}

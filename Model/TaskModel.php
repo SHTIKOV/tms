@@ -24,21 +24,11 @@ class TaskModel {
             $isEdit = true;
         }
 
-        if (isset ($data['email'])) {
-            $task->setEmail ($data['email']);
-        }
-        
-        if (isset ($data['username'])) {
-            $task->setUsername ($data['username']);
-        }
-        
-        if (isset ($data['description'])) {
-            $task->setDescription ($data['description']);
-        }
-
-        if (isset ($data['status'])) {
-            $task->setStatus ($data['status']);
-        }
+        $task
+            ->setEmail ($data['email'])
+            ->setUsername ($data['username'])
+            ->setDescription ($data['description'])
+            ->setStatus ($data['status']);
 
         if ($isEdit) {
             $task->setIsEdited (true);

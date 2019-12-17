@@ -27,7 +27,7 @@ class Task implements \JsonSerializable {
     private $email;
 
     /** 
-     * @Column(type="string") 
+     * @Column(type="text") 
      * 
      * @var string
      */

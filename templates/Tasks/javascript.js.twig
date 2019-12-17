@@ -1,21 +1,61 @@
 <script>
+        const DESCRIPTION_LENGTH = 120;
         const TASKS_LIST = {{ tasks | json_encode | raw }};
         const TASK_STATUS_LIST = ['planned', 'work', 'closed'];
+        const TASK_STATUS_COLOR_LIST = {
+            planned: '#007bff',
+            work: '#dc3545', 
+            closed: '#28a745'
+        };
         
         function Task (data = {}) {
             let self = this,
-                def = {
-                    username: "",
-                    description: "",
-                    email: "",
-                    id: null,
-                    isEdited: false,
-                    status: "",
-                    created: "",
-                };
+                def = {{ defaultTask | json_encode | raw }};
 
-            ko.mapping.fromJS ($.extend (def, data), {}, self);
+            ko.mapping.fromJS ($.extend (def, data), {
+                username: {
+                    create: opts => {
+                        return ko.observable (opts.data).extend ({
+                            required: {
+                                message: 'Please supply user name.'
+                            }
+                        });
+                    }
+                },
+                description: {
+                    create: opts => {
+                        return ko.observable (opts.data).extend ({
+                            required: {
+                                message: 'Please supply task description.'
+                            }
+                        });
+                    }
+                },
+                email: {
+                    create: opts => {
+                        return ko.observable (opts.data).extend ({
+                            email: true,
+                            required: {
+                                message: 'Please supply email address.'
+                            }
+                        });
+                    }
+                },
+            }, self);
 
+            self.errors = ko.validation.group (self);
+
+            self.shortDescription = ko.pureComputed ({
+                read: () => {
+                    let desc = self.description ();
+                    return desc.length > DESCRIPTION_LENGTH 
+                        ? desc.slice (0, DESCRIPTION_LENGTH) + '...' 
+                        : desc
+                },
+                owner: self
+            });
+
+            {% if isAuth() %}
             self.edit = function () {
                 viewModel.editModel.show ({
                     title: `Edit task: ${self.id ()}`,
@@ -26,32 +66,9 @@
                 });
             }
 
-            self.save = function () {
-                $.ajax ({
-                    type:   "GET",
-                    url:    "/tasks/edit",
-                    cache:  false,
-                    data:   ko.mapping.toJS (self),
-                    success: function (task) {
-                        console.log (task);
-                        task = JSON.parse (String (task));
-                        console.log (task);
-                        noty ('Task saved', 'success');
-                        if (!self.id ()) {
-                            self.id (task.id);
-                            self.isEdited (task.isEdited);
-                            viewModel.tasks.push (self);
-                        }
-                    },
-                    error: function (xhr, ajaxOptions, thrownError) {
-                        noty ("Can't save task", "error");
-                    }
-                });
-            }
-
             self.remove = function () {
                 noty (
-                    'Are you shure wanna remove this task?', 
+                    'Are you sure wanna remove this task?', 
                     'warning', 
                     [
                         Noty.button ('Yes', 'btn btn-danger', function () {
@@ -73,9 +90,35 @@
                     false
                 );
             }
+            {% endif %}
+
+            self.save = function () {
+                $.ajax ({
+                    type:   "GET",
+                    url:    "/tasks/edit",
+                    cache:  false,
+                    data:   ko.mapping.toJS (self),
+                    success: function (task) {
+                        task = JSON.parse (String (task));
+                        if (!self.id ()) {
+                            self.id (task.id);
+                            self.isEdited (task.isEdited);
+                            viewModel.tasks.push (self);
+                        }
+                        noty ('Task saved', 'success');
+                    },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        noty ("Can't save task", "error");
+                    }
+                });
+            }
 
             self.validate = function () {
-                {# noty ('Check that the form is filled in correctly', 'warning'); #}
+                if (self.errors ().length > 0) {
+                    noty ('Check that the form is filled in correctly', 'warning');
+                    return false;
+                }
+
                 return true;
             }
         }
@@ -89,19 +132,20 @@
             self.addTask = function () {
                 let task = new Task ();
                 self.editModel.show ({
-                    title: 'Add task',
+                    title: 'Add new task',
                     template: 'task-edit-modal',
                     onSave: task.save,
                     data: task,
                     onValidate: task.validate,
                 });
             }
-
-            TASKS_LIST.forEach (task => {
-                self.tasks.push (new Task (task));
-            });
         }
 
         var viewModel = new ViewModel ();
-        ko.applyBindings (viewModel);
+
+        TASKS_LIST.forEach (task => {
+            viewModel.tasks.push (new Task (task));
+        });
+
+        ko.applyBindings (viewModel, $("body")[0]);
     </script>
