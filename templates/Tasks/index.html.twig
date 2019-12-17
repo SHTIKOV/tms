@@ -45,7 +45,7 @@
                                 data-toggle="tooltip"
                                 data-bind="text: email,
                                             attr: {
-                                                href: 'mailto:'+email(),
+                                                href: 'mailto:'+email()+'?subject=Task for '+username()+'&body='+description(),
                                                 title: 'Mail to: '+email()
                                             }">Email</a>
                         </td>
