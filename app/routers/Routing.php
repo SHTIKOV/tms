@@ -74,6 +74,7 @@ $router->map ('GET', '/', [BaseController::class, 'index']);
 $router->group ('/tasks', function (\League\Route\RouteGroup $route) {
     $route->map ('GET', '/', [TasksController::class, 'index']);
     $route->map ('GET', '/edit', [TasksController::class, 'edit']);
+    $route->map ('GET', '/load', [TasksController::class, 'load']);
     $route->map ('GET', '/remove', [TasksController::class, 'remove']);
 });
 

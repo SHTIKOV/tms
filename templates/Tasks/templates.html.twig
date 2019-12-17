@@ -1,3 +1,52 @@
+<script type="text/html" id="table-component-row-template">
+    <!-- ko foreach: $data -->
+    <tr data-toggle="tooltip" 
+        data-bind="css: { 'table-warning': userModel.isMyEmail (email()) },
+                    attr: { title: userModel.isMyEmail (email()) ? 'Your task' : '' }">
+        <th>
+            <b data-bind="text: id">ID</b>
+        </th>
+        <td data-bind="text: username">Username</td>
+        <td>
+            <a class="badge badge-info"
+                data-toggle="tooltip"
+                data-bind="text: email,
+                            attr: {
+                                href: 'mailto:'+email()+'?subject=Task for '+username()+'&body='+description(),
+                                title: 'Send this task to: '+email()
+                            }">Email</a>
+        </td>
+        <td data-bind="text: shortDescription">Description</td>
+        <td>
+            <span class="badge badge-secondary"
+                data-bind="text: status, style: { 'background-color': TASK_STATUS_COLOR_LIST[status()] }">Status</span>
+            <!-- ko if: isEdited -->
+            <span class="badge badge-secondary">Edited</span>
+            <!-- /ko -->
+        </td>
+        <td data-bind="text: createdDate">Created at</td>
+        <td align="right">
+            <div class="btn-group" role="group">
+                <button type="button" class="btn btn-info" data-toggle="tooltip" title="Show task description"
+                    data-bind="click: showDescription">
+                    <i class="fa fa-eye" aria-hidden="true"></i>
+                </button>
+                {% if isAuth() %}
+                <button type="button" class="btn btn-warning" data-toggle="tooltip" title="Edit task"
+                    data-bind="click: edit">
+                    <i class="fa fa-cog" aria-hidden="true"></i>
+                </button>
+                <button type="button" class="btn btn-danger" data-toggle="tooltip" title="Remove task"
+                    data-bind="click: remove">
+                    <i class="fa fa-trash" aria-hidden="true"></i>
+                </button>
+                {% endif %}
+            </div>
+        </td>
+    </tr>
+    <!-- /ko -->
+</script>
+
 <script type="text/html" id="task-edit-modal">
     <!-- ko with: data -->
     <form data-bind="validationOptions: { messageTemplate: 'customMessageTemplate' }">

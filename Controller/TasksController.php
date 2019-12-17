@@ -28,6 +28,16 @@ class TasksController extends \Core\BaseControllerAbstract {
         $this->response->getBody ()->write (json_encode ($task->jsonSerialize ()));
         return $this->response;
     }
+
+    public function load (ServerRequestInterface $request): ResponseInterface {
+        $tasks = (new TaskModel ($this->em))
+            ->load ($request->getQueryParams ());
+
+        $this->em->flush ();
+        
+        $this->response->getBody ()->write (json_encode ($tasks));
+        return $this->response;
+    }
     
     public function remove (ServerRequestInterface $request): ResponseInterface {
         $params = $request->getQueryParams ();

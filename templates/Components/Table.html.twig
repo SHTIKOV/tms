@@ -1,0 +1,141 @@
+<div type="text/html" id="table-component">
+    <button class="btn btn-success" type="button" data-bind="attr: { disabled: isBusy }, click: load">
+        <!-- ko if: isBusy -->
+        <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
+        Loading...
+        <!-- /ko -->
+        <!-- ko ifnot: isBusy -->
+        <i class="fa fa-retweet" aria-hidden="true"></i> 
+        Reload
+        <!-- /ko -->
+    </button>
+    <!-- ko if: data().length -->
+    <!-- ko if: isBusy -->
+    <div class="preloader" style="
+            display: block;
+            position: absolute;
+            top: 0px;
+            right: 0px;
+            left: 0px;
+            bottom: 0px;
+            background-color: rgba(0,0,0,.5);
+            z-index: 999;
+        ">
+        <div class="spinner-border" role="status" style="
+                right: calc(50% - 25px);
+                position: absolute;
+                top: 20px;
+                color: #fff;
+            ">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+    <!-- /ko -->
+    <table class="table table-striped table-hover">
+        <thead class="thead-dark">
+            <tr>
+                <!-- ko foreach: head -->
+                <th scope="col">
+                <!-- ko if: sort -->
+                    <a data-bind="text: name, attr: { href: getHref() }"></a>
+                <!-- /ko -->
+                <!-- ko ifnot: sort -->
+                    <span data-bind="text: name"></span>
+                <!-- /ko -->
+                </th>
+                <!-- /ko -->
+            </tr>
+        </thead>
+        <tbody>
+            <!-- ko template: { name: rowTemplate, data: data } --><!-- /ko -->
+        </tbody>
+    </table>
+
+    <!-- ko template: { name: paginationTemplate, data: $data } --><!-- /ko -->
+    <!-- /ko -->
+    <!-- ko ifnot: data().length -->
+    
+    <h3 class="justify-content-center" style="text-align: center;">Data not found</h3>
+    <!-- /ko -->
+</div>
+
+<script type="text/html" id="table-component-pagination-template">
+    <!-- ko if: total() > 0 -->
+    <nav>
+        <ul class="pagination justify-content-center">
+            <li class="page-item disabled">
+                <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+            </li>
+            <li class="page-item"><a class="page-link" href="#">1</a></li>
+            <li class="page-item"><a class="page-link" href="#">2</a></li>
+            <li class="page-item"><a class="page-link" href="#">3</a></li>
+            <li class="page-item">
+                <a class="page-link" href="#">Next</a>
+            </li>
+        </ul>
+    </nav>
+    <!-- /ko -->
+</script>
+
+<script>
+    function Field (data = {}) {
+        let self = this,
+            def = {
+                name: 'Field name', 
+                field: '', 
+                sort: false
+            };
+
+        data = $.extend (def, data);
+
+        ko.mapping.fromJS (data, {}, self);
+
+        self.getHref = function () {
+            return window.location.href+'?'+self.field ();
+        }
+    }
+
+    function Table (data = {}) {
+        let self = this,
+            def = {
+                head: [],
+                data: [],
+                currentPage: 1,
+                total: 0,
+                rowTemplate: 'table-component-row-template',
+                paginationTemplate: 'table-component-pagination-template',
+                loadUrl: '',
+                isBusy: false,
+            };
+
+        data = $.extend (def, data);
+        ko.mapping.fromJS (data, {}, self);
+
+        if (data.head.length) {
+            self.head (data.head.map (item => new Field (item)));
+        }
+
+        self.load = function () {
+            self.isBusy (true);
+            console.log ('Load', self.loadUrl ());
+            $.ajax ({
+                type:   "GET",
+                url:    self.loadUrl (),
+                cache:  false,
+                data:   ko.mapping.toJS (self),
+                success: function (response) {
+                    if (typeof data.onLoad == 'function') {
+                        data.onLoad (response);
+                    }
+
+                    self.isBusy (false);
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    noty ("Can't load data", "error");
+                }
+            });
+        }
+
+        self.load ();
+    }
+</script>

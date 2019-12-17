@@ -13,73 +13,16 @@
     <!-- ko with: editModel -->
     {% include 'Components/ModalEditor.html.twig' %}
     <!-- /ko -->
+    
     {% include 'Tasks/templates.html.twig' %}
 {% endblock %}
 
 {% block content %}
     <div class="row">
         <div class="col-md-12" style="overflow-x: auto;">
-            <table class="table table-striped table-hover">
-                <thead class="thead-dark">
-                    <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Name</th>
-                    <th scope="col">Email</th>
-                    <th scope="col">Description</th>
-                    <th scope="col" width="150px">Status</th>
-                    <th scope="col" width="150px">Cteated at</th>
-                    <th scope="col" style="text-align: right;">Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- ko foreach: tasks -->
-                    <tr data-toggle="tooltip" 
-                        data-bind="css: { 'table-warning': userModel.isMyEmail (email()) },
-                                    attr: { title: userModel.isMyEmail (email()) ? 'Your task' : '' }">
-                        <th>
-                            <b data-bind="text: id">ID</b>
-                        </th>
-                        <td data-bind="text: username">Username</td>
-                        <td>
-                            <a class="badge badge-info"
-                                data-toggle="tooltip"
-                                data-bind="text: email,
-                                            attr: {
-                                                href: 'mailto:'+email()+'?subject=Task for '+username()+'&body='+description(),
-                                                title: 'Mail to: '+email()
-                                            }">Email</a>
-                        </td>
-                        <td data-bind="text: shortDescription">Description</td>
-                        <td>
-                            <span class="badge badge-secondary"
-                                data-bind="text: status, style: { 'background-color': TASK_STATUS_COLOR_LIST[status()] }">Status</span>
-                            <!-- ko if: isEdited -->
-                            <span class="badge badge-secondary">Edited</span>
-                            <!-- /ko -->
-                        </td>
-                        <td data-bind="text: createdDate">Created at</td>
-                        <td align="right">
-                            <div class="btn-group" role="group">
-                                <button type="button" class="btn btn-info" data-toggle="tooltip" title="Show task description"
-                                    data-bind="click: showDescription">
-                                    <i class="fa fa-eye" aria-hidden="true"></i>
-                                </button>
-                                {% if isAuth() %}
-                                <button type="button" class="btn btn-warning" data-toggle="tooltip" title="Edit task"
-                                    data-bind="click: edit">
-                                    <i class="fa fa-cog" aria-hidden="true"></i>
-                                </button>
-                                <button type="button" class="btn btn-danger" data-toggle="tooltip" title="Remove task"
-                                    data-bind="click: remove">
-                                    <i class="fa fa-trash" aria-hidden="true"></i>
-                                </button>
-                                {% endif %}
-                            </div>
-                        </td>
-                    </tr>
-                    <!-- /ko -->
-                </tbody>
-            </table>
+            <!-- ko with: table -->
+            {% include 'Components/Table.html.twig' %}
+            <!-- /ko -->
         </div>
     </div>
 {% endblock %}

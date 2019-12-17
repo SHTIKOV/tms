@@ -28,20 +28,21 @@
 
 <script>
     function ModalEditor (data = {}) {
-        let self = this;
+        let self = this,
+            def = {
+                title: 'Edit',
+                template: 'modal-body',
+                data: {},
+                hideSaveBtn: false,
+                isLg: false,
+                isXl: false,
+                isSm: false,
+                onSave: function () {},
+                onValidate: function () {return true;},
+            };
 
         /** Default data */
-        data = $.extend ({
-            title: 'Edit',
-            template: 'modal-body',
-            data: {},
-            hideSaveBtn: false,
-            isLg: false,
-            isXl: false,
-            isSm: false,
-            onSave: function () {},
-            onValidate: function () {return true;},
-        }, data);
+        data = $.extend (def, data);
 
         /** Init */
         self.title = ko.observable (data.title);

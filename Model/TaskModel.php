@@ -52,4 +52,13 @@ class TaskModel {
             return $task->jsonSerialize ();
         }, $tasks);
     }
+
+    public function load (array $data = []): array {
+        $tasks = $this->em->getRepository (Task::class)
+            ->findBy ([]);
+
+        return array_map (function ($task) {
+            return $task->jsonSerialize ();
+        }, $tasks);
+    }
 }

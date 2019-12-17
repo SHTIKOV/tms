@@ -1,11 +1,10 @@
 <script>
         const DESCRIPTION_LENGTH = 80;
-        const TASKS_LIST = {{ tasks | json_encode | raw }};
         const TASK_STATUS_LIST = ['planned', 'work', 'closed'];
         const TASK_STATUS_COLOR_LIST = {
-            planned: '#007bff',
-            work: '#dc3545', 
-            closed: '#28a745'
+            work:    '#dc3545', 
+            closed:  '#28a745',
+            planned: '#007bff'
         };
         
         function Task (data = {}) {
@@ -140,8 +139,28 @@
         function ViewModel () {
             let self = this;
 
-            self.tasks = ko.observableArray ();
             self.editModel = new ModalEditor ();
+            self.table = new Table ({
+                head: [
+                    {name: '#', field: 'id', sort: true},
+                    {name: 'Name', field: 'name', sort: true},
+                    {name: 'Email', field: 'email', sort: true},
+                    {name: 'Description', field: 'description', sort: true},
+                    {name: 'Status', field: '', sort: false},
+                    {name: 'Created', field: 'created', sort: true},
+                    {name: 'Action', field: '', sort: false},
+                ],
+                loadUrl: '/tasks/load',
+                onLoad: function (response) {
+                    if (response == undefined) {
+                        return;
+                    }
+                    
+                    let tasks = JSON.parse (response);
+                    
+                    viewModel.table.data (tasks.map (task => new Task (task)));
+                }
+            });
 
             self.addTask = function () {
                 let task = new Task ();
@@ -156,10 +175,5 @@
         }
 
         var viewModel = new ViewModel ();
-
-        TASKS_LIST.forEach (task => {
-            viewModel.tasks.push (new Task (task));
-        });
-
         ko.applyBindings (viewModel, $("body")[0]);
     </script>
