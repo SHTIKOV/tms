@@ -1,5 +1,5 @@
 <script>
-        const DESCRIPTION_LENGTH = 80;
+        const DESCRIPTION_LENGTH = 110;
         const TASK_STATUS_LIST = ['planned', 'work', 'closed'];
         const TASK_STATUS_COLOR_LIST = {
             work:    '#dc3545', 
@@ -119,6 +119,7 @@
                             viewModel.tasks.push (self);
                         }
                         noty ('Task saved', 'success');
+                        viewModel.table.load ();
                     },
                     error: function (xhr, ajaxOptions, thrownError) {
                         noty ("Can't save task", "error");
@@ -142,15 +143,26 @@
             self.editModel = new ModalEditor ();
             self.table = new Table ({
                 head: [
-                    {name: '#', field: 'id', sort: true},
-                    {name: 'Name', field: 'name', sort: true},
-                    {name: 'Email', field: 'email', sort: true},
+                    {name: '#',           field: 'id',          sort: true, width: '50px'},
+                    {name: 'Name',        field: 'name',        sort: true},
+                    {name: 'Email',       field: 'email',       sort: true},
                     {name: 'Description', field: 'description', sort: true},
-                    {name: 'Status', field: '', sort: false},
-                    {name: 'Created', field: 'created', sort: true},
-                    {name: 'Action', field: '', sort: false},
+                    {name: 'Status',      field: '',            sort: false},
+                    {name: 'Created',     field: 'created',     sort: true, width: '150px'},
+                    {name: 'Action',      field: '',            sort: false, align: 'right', width: '200px'},
                 ],
-                loadUrl: '/tasks/load',
+                loadUrl: '/tasks/load'
+            }, {
+                addMethod: function () {
+                    let task = new Task ();
+                    self.editModel.show ({
+                        title: 'Add new task',
+                        template: 'task-edit-modal',
+                        onSave: task.save,
+                        data: task,
+                        onValidate: task.validate,
+                    });
+                },
                 onLoad: function (response) {
                     if (response == undefined) {
                         return;
@@ -161,17 +173,6 @@
                     viewModel.table.data (tasks.map (task => new Task (task)));
                 }
             });
-
-            self.addTask = function () {
-                let task = new Task ();
-                self.editModel.show ({
-                    title: 'Add new task',
-                    template: 'task-edit-modal',
-                    onSave: task.save,
-                    data: task,
-                    onValidate: task.validate,
-                });
-            }
         }
 
         var viewModel = new ViewModel ();

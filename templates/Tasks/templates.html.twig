@@ -8,13 +8,10 @@
         </th>
         <td data-bind="text: username">Username</td>
         <td>
-            <a class="badge badge-info"
-                data-toggle="tooltip"
-                data-bind="text: email,
-                            attr: {
-                                href: 'mailto:'+email()+'?subject=Task for '+username()+'&body='+description(),
-                                title: 'Send this task to: '+email()
-                            }">Email</a>
+            <span class="badge badge-info">
+                <i class="fa fa-envelope" aria-hidden="true"></i>
+                <span data-bind="text: email">Email</span>
+            </span>
         </td>
         <td data-bind="text: shortDescription">Description</td>
         <td>
@@ -26,6 +23,16 @@
         </td>
         <td data-bind="text: createdDate">Created at</td>
         <td align="right">
+            {% if isAuth() %}
+            <a class="btn btn-primary"
+                data-toggle="tooltip"
+                data-bind="attr: {
+                                href: 'mailto:'+email()+'?subject=Task for '+username()+'&body='+description(),
+                                title: 'Send this task to: '+email()
+                            }">
+                <i class="fa fa-paper-plane" aria-hidden="true"></i>
+            </a>
+            {% endif %}
             <div class="btn-group" role="group">
                 <button type="button" class="btn btn-info" data-toggle="tooltip" title="Show task description"
                     data-bind="click: showDescription">

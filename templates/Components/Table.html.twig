@@ -1,14 +1,32 @@
 <div type="text/html" id="table-component">
-    <button class="btn btn-success" type="button" data-bind="attr: { disabled: isBusy }, click: load">
+    <button class="btn btn-success btn-sm" type="button" style="margin-bottom: 10px;"
+        data-toggle="tooltip"
+        title="Reload data"
+        data-bind="attr: { disabled: isBusy }, click: load">
         <!-- ko if: isBusy -->
         <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
         Loading...
         <!-- /ko -->
         <!-- ko ifnot: isBusy -->
         <i class="fa fa-retweet" aria-hidden="true"></i> 
-        Reload
         <!-- /ko -->
     </button>
+
+    <!-- ko if: hasAddMethod -->
+    <button class="btn btn-success btn-sm" type="button" style="margin-bottom: 10px;"
+        data-toggle="tooltip"
+        title="Add new item"
+        data-bind="attr: { disabled: isBusy }, click: addMethod">
+        <!-- ko if: isBusy -->
+        <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
+        Loading...
+        <!-- /ko -->
+        <!-- ko ifnot: isBusy -->
+        <i class="fa fa-plus" aria-hidden="true"></i> 
+        <!-- /ko -->
+    </button>
+    <!-- /ko -->
+
     <!-- ko if: data().length -->
     <!-- ko if: isBusy -->
     <div class="preloader" style="
@@ -35,9 +53,13 @@
         <thead class="thead-dark">
             <tr>
                 <!-- ko foreach: head -->
-                <th scope="col">
+                <th scope="col" data-bind="attr: { width: width() ? width() : 'auto' },
+                    style: { 'text-align': align() ? align() : '' }">
                 <!-- ko if: sort -->
-                    <a data-bind="text: name, attr: { href: getHref() }"></a>
+                    <a data-bind="attr: { href: getHref() }">
+                        <i class="fa fa-sort" aria-hidden="true"></i>
+                        <span data-bind="text: name"></span>
+                    </a>
                 <!-- /ko -->
                 <!-- ko ifnot: sort -->
                     <span data-bind="text: name"></span>
@@ -83,6 +105,8 @@
             def = {
                 name: 'Field name', 
                 field: '', 
+                width: null, 
+                align: null, 
                 sort: false
             };
 
@@ -95,7 +119,7 @@
         }
     }
 
-    function Table (data = {}) {
+    function Table (data = {}, methods = {}) {
         let self = this,
             def = {
                 head: [],
@@ -114,18 +138,20 @@
         if (data.head.length) {
             self.head (data.head.map (item => new Field (item)));
         }
+    
+        self.addMethod = methods.addMethod;
+        self.hasAddMethod = typeof methods.addMethod == 'function';
 
         self.load = function () {
             self.isBusy (true);
-            console.log ('Load', self.loadUrl ());
             $.ajax ({
                 type:   "GET",
                 url:    self.loadUrl (),
                 cache:  false,
                 data:   ko.mapping.toJS (self),
                 success: function (response) {
-                    if (typeof data.onLoad == 'function') {
-                        data.onLoad (response);
+                    if (typeof methods.onLoad == 'function') {
+                        methods.onLoad (response);
                     }
 
                     self.isBusy (false);
