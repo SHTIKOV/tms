@@ -81,10 +81,6 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/noty/3.1.4/noty.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
         <script>
-            $(function () {
-                $('[data-toggle="tooltip"]').tooltip ()
-            })
-
             function noty (text, type, buttons = [], timeout = 3000) {
                 let noty = new Noty ({
                     type: type,
@@ -116,6 +112,15 @@
             }
 
             var userModel = new UserModel ();
+
+            ko.bindingHandlers.tooltip = {
+                init: function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                    let options = valueAccessor ();
+                    $(element).tooltip ({
+                        title: options.title !== undefined ? options.title : $(element).attr ('title')
+                    });
+                }
+            };
         </script>
 
         {% block javascript %}{% endblock %}

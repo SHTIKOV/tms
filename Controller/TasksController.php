@@ -7,6 +7,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Model\TaskModel;
 use Entity\Task;
 use League\Route\Http\Exception\BadRequestException;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 
 class TasksController extends \Core\BaseControllerAbstract {
 
@@ -30,12 +31,14 @@ class TasksController extends \Core\BaseControllerAbstract {
     }
 
     public function load (ServerRequestInterface $request): ResponseInterface {
-        $tasks = (new TaskModel ($this->em))
+        $tasksQB = (new TaskModel ($this->em))
             ->load ($request->getQueryParams ());
 
-        $this->em->flush ();
-        
-        $this->response->getBody ()->write (json_encode ($tasks));
+        $paginator = new Paginator ($tasksQB);
+        $this->response->getBody ()->write (json_encode ([
+            'count' => $paginator->count (),
+            'data' => $tasksQB->getQuery ()->getArrayResult (),
+        ]));
         return $this->response;
     }
     

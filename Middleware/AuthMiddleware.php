@@ -20,6 +20,7 @@ class AuthMiddleware implements MiddlewareInterface {
         '/auth/register',
         '/tasks',
         '/tasks/edit',
+        '/tasks/load',
     ];
     
     public function process (ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface {

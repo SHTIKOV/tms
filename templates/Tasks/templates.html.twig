@@ -1,8 +1,7 @@
 <script type="text/html" id="table-component-row-template">
     <!-- ko foreach: $data -->
-    <tr data-toggle="tooltip" 
-        data-bind="css: { 'table-warning': userModel.isMyEmail (email()) },
-                    attr: { title: userModel.isMyEmail (email()) ? 'Your task' : '' }">
+    <tr data-bind="css: { 'table-warning': userModel.isMyEmail (email()) },
+                    tooltip: { title: userModel.isMyEmail (email()) ? 'Your task' : '' }">
         <th>
             <b data-bind="text: id">ID</b>
         </th>
@@ -18,33 +17,32 @@
             <span class="badge badge-secondary"
                 data-bind="text: status, style: { 'background-color': TASK_STATUS_COLOR_LIST[status()] }">Status</span>
             <!-- ko if: isEdited -->
-            <span class="badge badge-secondary">Edited</span>
+            <span class="badge badge-secondary">Admin edited</span>
             <!-- /ko -->
         </td>
         <td data-bind="text: createdDate">Created at</td>
         <td align="right">
             {% if isAuth() %}
             <a class="btn btn-primary"
-                data-toggle="tooltip"
                 data-bind="attr: {
-                                href: 'mailto:'+email()+'?subject=Task for '+username()+'&body='+description(),
-                                title: 'Send this task to: '+email()
-                            }">
+                                href: 'mailto:'+email()+'?subject=Task for '+username()+'&body='+description()
+                            }, 
+                            tooltip: { title: 'Send this task to: '+email() }">
                 <i class="fa fa-paper-plane" aria-hidden="true"></i>
             </a>
             {% endif %}
             <div class="btn-group" role="group">
-                <button type="button" class="btn btn-info" data-toggle="tooltip" title="Show task description"
-                    data-bind="click: showDescription">
+                <button type="button" class="btn btn-info"
+                    data-bind="click: showDescription, tooltip: { title: 'Show task description' }">
                     <i class="fa fa-eye" aria-hidden="true"></i>
                 </button>
                 {% if isAuth() %}
-                <button type="button" class="btn btn-warning" data-toggle="tooltip" title="Edit task"
-                    data-bind="click: edit">
+                <button type="button" class="btn btn-warning"
+                    data-bind="click: edit, tooltip: { title: 'Edit task' }">
                     <i class="fa fa-cog" aria-hidden="true"></i>
                 </button>
-                <button type="button" class="btn btn-danger" data-toggle="tooltip" title="Remove task"
-                    data-bind="click: remove">
+                <button type="button" class="btn btn-danger"
+                    data-bind="click: remove, tooltip: { title: 'Remove task' }">
                     <i class="fa fa-trash" aria-hidden="true"></i>
                 </button>
                 {% endif %}
@@ -57,24 +55,48 @@
 <script type="text/html" id="task-edit-modal">
     <!-- ko with: data -->
     <form data-bind="validationOptions: { messageTemplate: 'customMessageTemplate' }">
-        <div class="form-group">
-            <label>Username</label>
-            <input type="text" class="form-control" placeholder="The field is not filled"
-                data-bind="textInput: username, 
-                            css: { 'is-valid': username.isModified() && username.isValid() }">
+        <div class="row">
+            <div class="col">
+                <div class="form-group">
+                    <div class="input-group input-group-sm mb-3" data-bind="tooltip: { title: 'Username' }">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                <i class="fa fa-user" aria-hidden="true"></i>
+                            </span>
+                        </div>
+                        <input type="text" class="form-control" placeholder="Username"
+                            data-bind="textInput: username, 
+                                        css: { 'is-valid': username.isModified() && username.isValid() }">
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-group">
+                    <div class="input-group input-group-sm mb-3" data-bind="tooltip: { title: 'Email' }">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                <i class="fa fa-envelope" aria-hidden="true"></i>
+                            </span>
+                        </div>
+                        <input type="text" class="form-control" placeholder="Email"
+                            data-bind="textInput: email, 
+                                        css: { 'is-valid': email.isModified() && email.isValid() }">
+                    </div>
+                </div>
+            </div>
         </div>
-
+        
         <div class="form-group">
-            <label>Email</label>
-            <input type="text" class="form-control" placeholder="The field is not filled"
-                data-bind="textInput: email, 
-                            css: { 'is-valid': email.isModified() && email.isValid() }">
-        </div>
-
-        <div class="form-group">
-            <label for="inputAddress2">Description</label>
-            <textarea class="form-control" placeholder="The field is not filled" rows="5"
+            <label for="inputAddress2">
+                Description 
+                <!-- ko if: description -->
+                <span class="badge badge-info"
+                    data-bind="text: 'Length: '+description().length">Length</span>
+                <!-- /ko -->
+            </label>
+            <textarea class="form-control" placeholder="The field is not filled" rows="8"
                 data-bind="textInput: description, 
+                            tooltip: {},
                             css: { 'is-valid': description.isModified() && description.isValid() }"></textarea>
         </div>
 
@@ -98,6 +120,28 @@
 
 <script id="task-show-description-modal" type="text/html">
     <!-- ko with: data -->
+    <div class="row">
+        <div class="col-md-4">
+            Status: 
+            <span class="badge badge-secondary"
+                data-bind="text: status, style: { 'background-color': TASK_STATUS_COLOR_LIST[status()] }">Status</span>
+            <!-- ko if: isEdited -->
+            <span class="badge badge-secondary">Admin edited</span>
+            <!-- /ko -->
+        </div>
+        <div class="col-md-3">
+            Username: 
+            <span class="badge badge-primary" data-bind="text: username">Username</span>
+        </div>
+        <div class="col-md-5">
+            Email: 
+            <span class="badge badge-info">
+                <i class="fa fa-envelope" aria-hidden="true"></i>
+                <span data-bind="text: email">Email</span>
+            </span>
+        </div>
+    </div>
+    <hr>
     <p data-bind="text: description"></p>
     <!-- /ko -->
 </script>

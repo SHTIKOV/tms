@@ -1,8 +1,6 @@
 <div type="text/html" id="table-component">
-    <button class="btn btn-success btn-sm" type="button" style="margin-bottom: 10px;"
-        data-toggle="tooltip"
-        title="Reload data"
-        data-bind="attr: { disabled: isBusy }, click: load">
+    <button class="btn btn-primary btn-sm" type="button" style="margin-bottom: 10px;"
+        data-bind="attr: { disabled: isBusy }, click: load, tooltip: { title: 'Reload data' }">
         <!-- ko if: isBusy -->
         <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
         Loading...
@@ -14,9 +12,7 @@
 
     <!-- ko if: hasAddMethod -->
     <button class="btn btn-success btn-sm" type="button" style="margin-bottom: 10px;"
-        data-toggle="tooltip"
-        title="Add new item"
-        data-bind="attr: { disabled: isBusy }, click: addMethod">
+        data-bind="attr: { disabled: isBusy }, click: addMethod, tooltip: { title: 'Add new item' }">
         <!-- ko if: isBusy -->
         <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
         Loading...
@@ -78,21 +74,30 @@
     <!-- ko ifnot: data().length -->
     
     <h3 class="justify-content-center" style="text-align: center;">Data not found</h3>
+    <!-- ko template: { name: paginationTemplate, data: $data } --><!-- /ko -->
     <!-- /ko -->
 </div>
 
 <script type="text/html" id="table-component-pagination-template">
-    <!-- ko if: total() > 0 -->
+    <!-- ko if: total() > perPage() -->
     <nav>
         <ul class="pagination justify-content-center">
-            <li class="page-item disabled">
-                <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+            <li class="page-item" data-bind="css: { disabled: !(currentPage() > 1) }">
+                <button class="page-link"
+                    data-bind="click: function () {currentPage(currentPage() - 1)}">Previous</button>
             </li>
-            <li class="page-item"><a class="page-link" href="#">1</a></li>
-            <li class="page-item"><a class="page-link" href="#">2</a></li>
-            <li class="page-item"><a class="page-link" href="#">3</a></li>
-            <li class="page-item">
-                <a class="page-link" href="#">Next</a>
+
+            <!-- ko foreach: pages -->
+            <li class="page-item" data-bind="css: { 'active': $data == $parent.currentPage() }">
+                <button class="page-link"
+                    data-bind="text: $data,
+                                click: function () { $parent.currentPage($data) }">#</button>
+            </li>
+            <!-- /ko -->
+
+            <li class="page-item" data-bind="css: { disabled: !(pages().length > currentPage()) }">
+                <button class="page-link"
+                    data-bind="click: function () {currentPage(currentPage() + 1)}">Next</button>
             </li>
         </ul>
     </nav>
@@ -124,6 +129,7 @@
             def = {
                 head: [],
                 data: [],
+                perPage: 3,
                 currentPage: 1,
                 total: 0,
                 rowTemplate: 'table-component-row-template',
@@ -135,6 +141,26 @@
         data = $.extend (def, data);
         ko.mapping.fromJS (data, {}, self);
 
+        self.pagesCount = ko.pureComputed ({
+            read: () => self.total () / self.perPage (),
+            owner: self
+        });
+        
+        self.pages = ko.pureComputed ({
+            read: () => {
+                let pages = [];
+                while (pages.length < self.pagesCount ()) {
+                    pages.push (pages.length + 1);
+                }
+                return pages;
+            },
+            owner: self
+        });
+
+        self.currentPage.subscribe (function (newValue) {
+            self.load ();
+        });
+
         if (data.head.length) {
             self.head (data.head.map (item => new Field (item)));
         }
@@ -144,15 +170,22 @@
 
         self.load = function () {
             self.isBusy (true);
+            let data = {
+                currentPage: self.currentPage (),
+                perPage: self.perPage (),
+            };
+            
             $.ajax ({
                 type:   "GET",
                 url:    self.loadUrl (),
                 cache:  false,
-                data:   ko.mapping.toJS (self),
+                data:   data,
                 success: function (response) {
+                    response = JSON.parse (response);
                     if (typeof methods.onLoad == 'function') {
-                        methods.onLoad (response);
+                        methods.onLoad (response.data);
                     }
+                    self.total (response.count);
 
                     self.isBusy (false);
                 },

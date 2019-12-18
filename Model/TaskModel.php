@@ -53,12 +53,17 @@ class TaskModel {
         }, $tasks);
     }
 
-    public function load (array $data = []): array {
-        $tasks = $this->em->getRepository (Task::class)
-            ->findBy ([]);
+    public function load (array $data = []): \Doctrine\ORM\QueryBuilder {
+        $start = $data['perPage'] * ($data['currentPage'] - 1);
 
-        return array_map (function ($task) {
-            return $task->jsonSerialize ();
-        }, $tasks);
+        $qb = $this->em->createQueryBuilder ();
+        $qb
+            ->select ('task')
+            ->from (Task::class, 'task')
+            ->orderBy ("task.id", "DESC")
+            ->setFirstResult ($start)
+            ->setMaxResults ($start + $data['perPage']);
+
+        return $qb;
     }
 }

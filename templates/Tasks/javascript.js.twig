@@ -1,5 +1,5 @@
 <script>
-        const DESCRIPTION_LENGTH = 110;
+        const DESCRIPTION_LENGTH = 100;
         const TASK_STATUS_LIST = ['planned', 'work', 'closed'];
         const TASK_STATUS_COLOR_LIST = {
             work:    '#dc3545', 
@@ -40,9 +40,14 @@
                         });
                     }
                 },
+                created: {
+                    create: opts => {
+                        return moment (opts.data.date ? opts.data.date : null);
+                    }
+                },
             }, self);
 
-            self.createdDate = moment.unix (self.created ()).format ('MMMM Do YYYY, h:mm:ss a');
+            self.createdDate = self.created.format ('MMMM Do YYYY, h:mm:ss a');
 
             self.errors = ko.validation.group (self);
 
@@ -58,7 +63,7 @@
 
             self.showDescription = function () {
                 viewModel.editModel.show ({
-                    title: `Description task: ${self.id ()}`,
+                    title: `Description task: #${self.id ()}`,
                     template: 'task-show-description-modal',
                     data: self,
                     hideSaveBtn: true,
@@ -69,11 +74,12 @@
             {% if isAuth() %}
             self.edit = function () {
                 viewModel.editModel.show ({
-                    title: `Edit task: ${self.id ()}`,
+                    title: `Edit task: #${self.id ()}`,
                     template: 'task-edit-modal',
                     onSave: self.save,
                     onValidate: self.validate,
                     data: self,
+                    isLg: true,
                 });
             }
 
@@ -112,12 +118,6 @@
                     cache:  false,
                     data:   ko.mapping.toJS (self),
                     success: function (task) {
-                        task = JSON.parse (String (task));
-                        if (!self.id ()) {
-                            self.id (task.id);
-                            self.isEdited (task.isEdited);
-                            viewModel.tasks.push (self);
-                        }
                         noty ('Task saved', 'success');
                         viewModel.table.load ();
                     },
@@ -161,15 +161,10 @@
                         onSave: task.save,
                         data: task,
                         onValidate: task.validate,
+                        isLg: true,
                     });
                 },
-                onLoad: function (response) {
-                    if (response == undefined) {
-                        return;
-                    }
-                    
-                    let tasks = JSON.parse (response);
-                    
+                onLoad: function (tasks) {
                     viewModel.table.data (tasks.map (task => new Task (task)));
                 }
             });
