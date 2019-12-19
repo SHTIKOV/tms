@@ -112,11 +112,14 @@
             {% endif %}
 
             self.save = function () {
+                let data = ko.mapping.toJS (self);
+                delete data.created;
+                
                 $.ajax ({
                     type:   "GET",
                     url:    "/tasks/edit",
                     cache:  false,
-                    data:   ko.mapping.toJS (self),
+                    data:   data,
                     success: function (task) {
                         noty ('Task saved', 'success');
                         viewModel.table.load ();

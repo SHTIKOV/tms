@@ -2,8 +2,8 @@
 return [
     'db' => [
         'driver'   => 'pdo_mysql',
-        'user'     => 'root',
-        'password' => '',
+        'user'     => 'tms',
+        'password' => 'tms',
         'dbname'   => 'tms',
     ],
     'isDevMod' => true

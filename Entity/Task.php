@@ -119,7 +119,6 @@ class Task implements \JsonSerializable {
     
     public function jsonSerialize (): array {
         $output = get_object_vars ($this);
-        $output['created'] = $this->getCreated ()->getTimestamp ();
         return $output;
     }
 }
