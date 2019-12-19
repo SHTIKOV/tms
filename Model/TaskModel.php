@@ -60,7 +60,13 @@ class TaskModel {
         $qb
             ->select ('task')
             ->from (Task::class, 'task')
-            ->orderBy ("task.id", "DESC")
+            ->orderBy ("task.id", "DESC");
+
+        if (isset ($data['sortBy']) && $data['sortBy']['field'] !== '') {
+            $qb->orderBy ($data['sortBy']['field'], $data['sortBy']['type']);
+        }
+
+        $qb
             ->setFirstResult ($start)
             ->setMaxResults ($start + $data['perPage']);
 

@@ -13,3 +13,7 @@ doctrine:
 .PHONY: migrations
 migrations:
 	vendor/bin/doctrine-migrations
+
+.PHONY: server
+server:
+	php -S localhost:8000

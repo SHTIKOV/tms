@@ -52,10 +52,20 @@
                 <th scope="col" data-bind="attr: { width: width() ? width() : 'auto' },
                     style: { 'text-align': align() ? align() : '' }">
                 <!-- ko if: sort -->
-                    <a data-bind="attr: { href: getHref() }">
-                        <i class="fa fa-sort" aria-hidden="true"></i>
-                        <span data-bind="text: name"></span>
-                    </a>
+                <a data-bind="click: selectSort, css: { 'text-success': table.sortBy.field() == field() }">
+                    <!-- ko if: table.sortBy.type() == '' -->
+                    <i class="fa fa-sort" aria-hidden="true"></i>
+                    <!-- /ko -->
+                    <!-- ko if: table.sortBy.field() == field() -->
+                        <!-- ko if: table.sortBy.type() == 'DESC' -->
+                        <i class="fa fa-arrow-down" aria-hidden="true"></i>
+                        <!-- /ko -->
+                        <!-- ko if: table.sortBy.type() == 'ASC' -->
+                        <i class="fa fa-arrow-up" aria-hidden="true"></i>
+                        <!-- /ko -->
+                    <!-- /ko -->
+                    <span data-bind="text: name"></span>
+                </a>
                 <!-- /ko -->
                 <!-- ko ifnot: sort -->
                     <span data-bind="text: name"></span>
@@ -105,7 +115,17 @@
 </script>
 
 <script>
-    function Field (data = {}) {
+    function SortField (data = {}) {
+        let self = this,
+            def = {
+                field: '',
+                type: '',
+            };
+
+        ko.mapping.fromJS ($.extend (def, data), {}, self);
+    }
+
+    function Field (table, data = {}) {
         let self = this,
             def = {
                 name: 'Field name', 
@@ -115,12 +135,18 @@
                 sort: false
             };
 
-        data = $.extend (def, data);
+        ko.mapping.fromJS ($.extend (def, data), {}, self);
 
-        ko.mapping.fromJS (data, {}, self);
+        self.table = table;
 
         self.getHref = function () {
             return window.location.href+'?'+self.field ();
+        }
+
+        self.selectSort = function () {
+            table.sortBy.field (self.field ());
+            table.sortBy.type (table.sortBy.type () == 'DESC' ? 'ASC' : 'DESC');
+            table.load ();
         }
     }
 
@@ -135,11 +161,18 @@
                 rowTemplate: 'table-component-row-template',
                 paginationTemplate: 'table-component-pagination-template',
                 loadUrl: '',
+                sortBy: {},
                 isBusy: false,
             };
 
         data = $.extend (def, data);
-        ko.mapping.fromJS (data, {}, self);
+        ko.mapping.fromJS (data, {
+            sortBy: {
+                create: opts => {
+                    return new SortField (self, opts.data);
+                }
+            },
+        }, self);
 
         self.pagesCount = ko.pureComputed ({
             read: () => self.total () / self.perPage (),
@@ -162,7 +195,7 @@
         });
 
         if (data.head.length) {
-            self.head (data.head.map (item => new Field (item)));
+            self.head (data.head.map (item => new Field (self, item)));
         }
     
         self.addMethod = methods.addMethod;
@@ -173,6 +206,7 @@
             let data = {
                 currentPage: self.currentPage (),
                 perPage: self.perPage (),
+                sortBy: ko.mapping.toJS (self.sortBy),
             };
             
             $.ajax ({

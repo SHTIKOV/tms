@@ -146,13 +146,13 @@
             self.editModel = new ModalEditor ();
             self.table = new Table ({
                 head: [
-                    {name: 'ID',          field: 'id',          sort: true, width: '55px'},
-                    {name: 'Name',        field: 'name',        sort: true},
-                    {name: 'Email',       field: 'email',       sort: true},
-                    {name: 'Description', field: 'description', sort: true},
-                    {name: 'Status',      field: '',            sort: false},
-                    {name: 'Created',     field: 'created',     sort: true, width: '150px'},
-                    {name: 'Action',      field: '',            sort: false, align: 'right', width: '200px'},
+                    {name: 'ID',          field: 'task.id',          sort: true,  width: '55px'},
+                    {name: 'Name',        field: 'task.username',    sort: true},
+                    {name: 'Email',       field: 'task.email',       sort: true},
+                    {name: 'Description', field: 'task.description', sort: true},
+                    {name: 'Status',      field: '',                 sort: false},
+                    {name: 'Created',     field: 'task.created',     sort: true,  width: '150px'},
+                    {name: 'Action',      field: '',                 sort: false, width: '200px', align: 'right'},
                 ],
                 loadUrl: '/tasks/load'
             }, {
