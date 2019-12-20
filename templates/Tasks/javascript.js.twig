@@ -1,10 +1,10 @@
 <script>
         const DESCRIPTION_LENGTH = 100;
-        const TASK_STATUS_LIST = ['planned', 'work', 'closed'];
+        const TASK_STATUS_LIST = ['open', 'working', 'closed'];
         const TASK_STATUS_COLOR_LIST = {
-            work:    '#dc3545', 
-            closed:  '#28a745',
-            planned: '#007bff'
+            open: '#007bff',
+            working:    '#dc3545', 
+            closed:  '#28a745'
         };
         
         function Task (data = {}) {
