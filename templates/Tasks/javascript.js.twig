@@ -96,7 +96,7 @@
                                 data:   {id: self.id ()},
                                 success: function () {
                                     noty ('Task removed', 'success');
-                                    viewModel.tasks.remove (self);
+                                    viewModel.table.load ();
                                     n.close ();
                                 },
                                 error: function (xhr, ajaxOptions, thrownError) {
