@@ -1,21 +1,25 @@
 <?php
 
+declare (strict_types=1);
+
 namespace Controller;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Model\TaskModel;
-use Entity\Task;
 use League\Route\Http\Exception\BadRequestException;
 use Doctrine\ORM\Tools\Pagination\Paginator;
+use Model\TaskModel;
+use Entity\Task;
 
+/**
+ * Tasks controller
+ * 
+ * @author Константин Штыков (SHTIKOV)
+ */
 class TasksController extends \Core\BaseControllerAbstract {
 
     public function index (ServerRequestInterface $request): ResponseInterface {
-        $task = (new TaskModel ($this->em))
-            ->get ($request->getQueryParams ());
         return $this->render ('Tasks/index.html.twig', [
-            'tasks' => $task,
             'defaultTask' => (new Task)->jsonSerialize (),
         ]);
     }
@@ -42,13 +46,20 @@ class TasksController extends \Core\BaseControllerAbstract {
         return $this->response;
     }
     
+    /**
+     * Remove task
+     *
+     * @param ServerRequestInterface $request
+     * @return ResponseInterface
+     * @throws BadRequestException
+     */
     public function remove (ServerRequestInterface $request): ResponseInterface {
         $params = $request->getQueryParams ();
-        if (!isset ($params['id']) || !$params['id']) {
+        if (!isset ($params['id']) || empty ($params['id'])) {
             throw new BadRequestException ('Field "id" is required.');
         }
         
-        $task = (new TaskModel ($this->em))->remove ($params['id']);
+        $task = (new TaskModel ($this->em))->remove ((int) $params['id']);
         $this->em->flush ();
 
         return $this->response;

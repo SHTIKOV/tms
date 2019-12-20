@@ -1,10 +1,14 @@
-<?php declare (strict_types=1);
+<?php 
+
+declare (strict_types=1);
 
 namespace Core;
 
 use Psr\Http\Message\ResponseInterface;
 
 /**
+ * Controller interface
+ * 
  * @author Константин Штыков (shtykov)
  */
 interface BaseControllerInterface {

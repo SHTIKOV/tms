@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php 
+
+declare(strict_types=1);
 
 namespace Middleware;
 
@@ -11,6 +13,11 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Tools\Setup;
 use Model\UserModel;
 
+/**
+ * AuthMiddleware
+ * 
+ * @author Константин Штыков (SHTIKOV)
+ */
 class AuthMiddleware implements MiddlewareInterface {
 
     const UNAVAILABLE_PATHS_FOR_REDIRECT = [

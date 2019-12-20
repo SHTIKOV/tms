@@ -1,5 +1,7 @@
 <?php
 
+declare (strict_types=1);
+
 namespace Model;
 
 use League\Route\Http\Exception\{
@@ -9,6 +11,11 @@ use League\Route\Http\Exception\{
 use Doctrine\ORM\EntityManager;
 use Entity\User;
 
+/**
+ * User model
+ * 
+ * @author Константин Штыков (SHTIKOV)
+ */
 class UserModel {
 
     /** @var EntityManager */
@@ -18,8 +25,15 @@ class UserModel {
         $this->em = $em;
     }
 
+    /**
+     * Register user
+     *
+     * @param array $data
+     * @return void
+     * @throws BadRequestException
+     */
     public function register (array $data): void {
-        if (!isset ($data['email']) || !isset ($data['username']) || !isset ($data['password'])) {
+        if (!isset ($data['email'], $data['username'], $data['password'])) {
             throw new BadRequestException ('Fields "Email", "Username" and "Password" are reqired.');
         }
 
@@ -35,6 +49,14 @@ class UserModel {
         $this->em->persist ($user);
     }
 
+    /**
+     * Login
+     *
+     * @param string $email
+     * @param string $password
+     * @return void
+     * @throws BadRequestException
+     */
     public function login (string $email, string $password): void {
         $user = $this->em->getRepository (User::class)
             ->findOneBy ([
@@ -51,23 +73,12 @@ class UserModel {
         $this->em->persist ($user);
 
         $sessionDeathTime = $this->getSessionDeathTime ();
-        setcookie ("id", $user->getId (), $sessionDeathTime);
         setcookie ("token", $user->getToken (), $sessionDeathTime);
     }
 
     public function logout (): void {
-        unset($_COOKIE['id']);
-        setcookie('id', null, -1, '/');
         unset($_COOKIE['token']);
-        setcookie('token', null, -1, '/');
-    }
-
-    public function check (array $cookies): bool {
-        if (isset ($cookies['id']) && isset ($cookies['token'])) {
-            $user = $this->getUserByToken ($cookies['token']);
-            return true;
-        }
-        return false;
+        setcookie('token', '', -1, '/');
     }
 
     public function isExists (string $email, ?string $password = null): bool {

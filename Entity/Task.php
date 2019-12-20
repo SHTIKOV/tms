@@ -1,5 +1,7 @@
 <?php
 
+declare (strict_types=1);
+
 namespace Entity;
 
 /**
@@ -118,7 +120,6 @@ class Task implements \JsonSerializable {
     }
     
     public function jsonSerialize (): array {
-        $output = get_object_vars ($this);
-        return $output;
+        return get_object_vars ($this);
     }
 }

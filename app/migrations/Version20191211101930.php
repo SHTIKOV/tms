@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
 
 namespace DoctrineMigrations;
 
@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Created User
  * 
- * @author КОнстантин Штыков (SHTIKOV)
+ * @author Константин Штыков (SHTIKOV)
  */
 final class Version20191211101930 extends AbstractMigration {
     public function getDescription (): string {

@@ -1,16 +1,21 @@
 <?php
 
+declare (strict_types=1);
+
 namespace Core;
 
 use Twig\Environment;
-use Twig\Loader\FilesystemLoader;
-use Twig\TwigFunction;
 use Zend\Diactoros\Response;
 use Psr\Http\Message\ResponseInterface;
-use Doctrine\ORM\Tools\Setup;
 use Doctrine\ORM\EntityManager;
 use Model\UserModel;
 
+
+/**
+ * Abstract controller
+ * 
+ * @author Константин Штыков (SHTIKOV)
+ */
 abstract class BaseControllerAbstract implements BaseControllerInterface {
 
     /** @var Environment */
