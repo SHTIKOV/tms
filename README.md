@@ -15,7 +15,7 @@ $ git clone git@github.com:SHTIKOV/tms.git
 ```
 
 # How to build
-To install, run the following **composer** command:
+To build, run the following **composer** command:
 ```sh
 $ composer install
 ```
