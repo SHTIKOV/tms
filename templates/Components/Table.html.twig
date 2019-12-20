@@ -3,7 +3,6 @@
         data-bind="attr: { disabled: isBusy }, click: load, tooltip: { title: 'Reload data' }">
         <!-- ko if: isBusy -->
         <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
-        Loading...
         <!-- /ko -->
         <!-- ko ifnot: isBusy -->
         <i class="fa fa-retweet" aria-hidden="true"></i> 
@@ -15,7 +14,6 @@
         data-bind="attr: { disabled: isBusy }, click: addMethod, tooltip: { title: 'Add new item' }">
         <!-- ko if: isBusy -->
         <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
-        Loading...
         <!-- /ko -->
         <!-- ko ifnot: isBusy -->
         <i class="fa fa-plus" aria-hidden="true"></i> 
