@@ -4,6 +4,8 @@ namespace Model;
 
 use Doctrine\ORM\EntityManager;
 use Entity\Task;
+use Entity\User;
+use League\Route\Http\Exception\UnauthorizedException;
 
 class TaskModel {
 
@@ -14,12 +16,16 @@ class TaskModel {
         $this->em = $em;
     }
 
-    public function edit (array $data): Task {
+    public function edit (array $data, ?User $user = null): Task {
         if (!isset ($data['id']) || !$data['id']) {
             $task = new Task ();
         } else {
             $task = $this->em->getRepository (Task::class)
                 ->find ($data['id']);
+        }
+
+        if (!is_null ($task->getId ()) && is_null ($user)) {
+            throw new UnauthorizedException ('User not found');
         }
 
         $task

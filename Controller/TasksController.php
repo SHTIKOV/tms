@@ -22,7 +22,7 @@ class TasksController extends \Core\BaseControllerAbstract {
 
     public function edit (ServerRequestInterface $request): ResponseInterface {
         $task = (new TaskModel ($this->em))
-            ->edit ($request->getQueryParams ());
+            ->edit ($request->getQueryParams (), $this->user);
 
         $this->em->flush ();
         
