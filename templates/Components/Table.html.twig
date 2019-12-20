@@ -52,8 +52,9 @@
                 <th scope="col" data-bind="attr: { width: width() ? width() : 'auto' },
                     style: { 'text-align': align() ? align() : '' }">
                 <!-- ko if: sort -->
-                <a data-bind="click: selectSort, css: { 'text-success': table.sortBy.field() == field() }">
-                    <!-- ko if: table.sortBy.type() == '' -->
+                <a style="cursor: pointer;" class="text-primary"
+                    data-bind="click: selectSort">
+                    <!-- ko if: table.sortBy.field() !== field() -->
                     <i class="fa fa-sort" aria-hidden="true"></i>
                     <!-- /ko -->
                     <!-- ko if: table.sortBy.field() == field() -->

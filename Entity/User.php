@@ -76,7 +76,7 @@ class User implements \JsonSerializable {
 	}
 
     public function getEmail (): string {
-        return $this->name;
+        return $this->email;
     }
 
     public function setEmail (string $email): User {

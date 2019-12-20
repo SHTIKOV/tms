@@ -6,7 +6,7 @@
     <div class="row">
         <div class="col-md-4"></div>
         <div class="col-md-4">
-            <form class="form-signin" method="GET">
+            <form class="form-signin" data-bind="validationOptions: { messageTemplate: 'validation-msg-template' }">
                 <div class="text-center mb-4">
                     <h1 class="h3 mb-3 font-weight-normal">
                         <a href="/auth">Auth</a> / Register
@@ -14,30 +14,94 @@
                 </div>
 
                 <div class="form-label-group">
-                    <label for="inputName">Name</label>
-                    <input name="name" type="text" id="inputName" class="form-control" placeholder="Name" required="" autofocus="">
+                    <label>Name</label>
+                    <input class="form-control" placeholder="Name" 
+                        data-bind="textInput: username,
+                                    css: { 'is-valid': username.isModified() && username.isValid() }"/>
                 </div>
 
                 <div class="form-label-group">
-                    <label for="inputEmail">Email address</label>
-                    <input name="email" type="email" id="inputEmail" class="form-control" placeholder="Email address" required="" autofocus="">
+                    <label>Email address</label>
+                    <input type="email" class="form-control" placeholder="Email address" 
+                        data-bind="textInput: email,
+                                    css: { 'is-valid': email.isModified() && email.isValid() }"/>
                 </div>
 
                 <div class="form-label-group">
-                    <label for="inputPassword">Password</label>
-                    <input name="password" type="password" id="inputPassword" class="form-control" placeholder="Password" required="">
+                    <label>Password</label>
+                    <input type="password" class="form-control" placeholder="Password"
+                        data-bind="textInput: password,
+                                    css: { 'is-valid': password.isModified() && password.isValid() }" />
                 </div>
 
                 <div class="form-label-group">
-                    <label for="inputPassword2">Repeat password</label>
-                    <input type="password" id="inputPassword2" class="form-control" placeholder="Repeat password" required="">
+                    <label>Confirm password</label>
+                    <input type="password" class="form-control" placeholder="Confirm password"
+                        data-bind="textInput: confirmPassword,
+                                    css: { 'is-valid': confirmPassword.isModified() && confirmPassword.isValid() }" />
                 </div>
 
-                <button class="btn btn-lg btn-primary btn-block" type="submit" style="margin-top: 20px;">
+                <button class="btn btn-lg btn-primary btn-block" style="margin-top: 20px;"
+                    data-bind="click: register">
                     Register
                 </button>
             </form>
         </div>
         <div class="col-md-4"></div>
     </div>
+{% endblock %}
+
+{% block javascript %}
+    <script>
+        function ViewModel () {
+            let self = this;
+
+            self.username = ko.observable ().extend ({
+                required: {
+                    message: 'Please supply user name.'
+                }
+            });
+            self.email = ko.observable ().extend ({
+                email: true,
+                required: {
+                    message: 'Please supply email address.'
+                }
+            });
+            self.password = ko.observable ().extend ({
+                required: {
+                    message: 'Please supply password.'
+                }
+            });
+            self.confirmPassword = ko.observable ().extend ({
+                validation: {
+                    validator: (val, other) => val == other,
+                    message: 'Passwords do not match.',
+                    params: self.password
+                }
+            });
+            self.errors = ko.validation.group (self);
+
+            self.register = function () {
+                if (self.errors ().length > 0) {
+                    noty ('Check that the form is filled in correctly', 'warning');
+                    return;
+                }
+
+                $.ajax ({
+                    type:   "GET",
+                    url:    "/auth/register",
+                    cache:  false,
+                    data:   {username: self.username (), email: self.email (), password: self.password ()},
+                    success: () => window.location.href = '/auth',
+                    error: (xhr, ajaxOptions, thrownError) => {
+                        console.log (xhr, ajaxOptions, thrownError);
+                        noty (thrownError, "error");
+                    }
+                });
+            }
+        }
+    
+        var viewModel = new ViewModel ();
+        ko.applyBindings (viewModel, $("body")[0]);
+    </script>
 {% endblock %}

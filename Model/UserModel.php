@@ -2,7 +2,10 @@
 
 namespace Model;
 
-use League\Route\Http\Exception\UnauthorizedException;
+use League\Route\Http\Exception\{
+    UnauthorizedException,
+    BadRequestException
+};
 use Doctrine\ORM\EntityManager;
 use Entity\User;
 
@@ -16,13 +19,17 @@ class UserModel {
     }
 
     public function register (array $data): void {
-        if ($this->isExists ($data['email'], $this->getMd5Password ($data['password']))) {
-            return;
+        if (!isset ($data['email']) || !isset ($data['username']) || !isset ($data['password'])) {
+            throw new BadRequestException ('Fields "Email", "Username" and "Password" are reqired.');
+        }
+
+        if ($this->isExists ($data['email'])) {
+            throw new BadRequestException ('User already exist');
         }
 
         $user = (new User ())
             ->setEmail ($data['email'])
-            ->setName ($data['name'] ?? 'Unnamed')
+            ->setName ($data['username'])
             ->setPassword ($this->getMd5Password ($data['password']));
             
         $this->em->persist ($user);
@@ -63,12 +70,13 @@ class UserModel {
         return false;
     }
 
-    public function isExists (string $email, string $password): bool {
+    public function isExists (string $email, ?string $password = null): bool {
+        $fields = ['email' => $email];
+        if (!is_null ($password)) {
+            $fields['password'] = $password;
+        }
         $user = $this->em->getRepository (User::class)
-            ->findOneBy ([
-                'email' => $email, 
-                'password' => $password
-            ]);
+            ->findOneBy ($fields);
         
         return $user instanceof User;
     }

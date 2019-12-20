@@ -54,7 +54,7 @@
 
 <script type="text/html" id="task-edit-modal">
     <!-- ko with: data -->
-    <form data-bind="validationOptions: { messageTemplate: 'customMessageTemplate' }">
+    <form data-bind="validationOptions: { messageTemplate: 'validation-msg-template' }">
         <div class="row">
             <div class="col">
                 <div class="form-group">
@@ -111,11 +111,6 @@
         </div>
     </form>
     <!-- /ko -->
-</script>
-
-<script id="customMessageTemplate" type="text/html">
-    <div class="invalid-feedback" data-bind="validationMessage: field"
-        style="display: block;"></div>
 </script>
 
 <script id="task-show-description-modal" type="text/html">
