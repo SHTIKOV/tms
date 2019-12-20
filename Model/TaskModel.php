@@ -15,24 +15,22 @@ class TaskModel {
     }
 
     public function edit (array $data): Task {
-        $isEdit = false;
         if (!isset ($data['id']) || !$data['id']) {
             $task = new Task ();
         } else {
             $task = $this->em->getRepository (Task::class)
                 ->find ($data['id']);
-            $isEdit = true;
         }
 
         $task
             ->setEmail ($data['email'])
             ->setUsername ($data['username'])
-            ->setDescription ($data['description'])
             ->setStatus ($data['status']);
 
-        if ($isEdit) {
+        if (!is_null ($task->getId ()) && $data['description'] !== $task->getDescription ()) {
             $task->setIsEdited (true);
         }
+        $task->setDescription ($data['description']);
             
         $this->em->persist ($task);
         return $task;
