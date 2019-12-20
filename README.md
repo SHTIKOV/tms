@@ -7,11 +7,11 @@
 # How to install
 To install, run the following **git** command:
 ```sh
-$ https://github.com/SHTIKOV/tms.git
+$ git clone https://github.com/SHTIKOV/tms.git
 ```
 or
 ```sh
-$ git@github.com:SHTIKOV/tms.git
+$ git clone git@github.com:SHTIKOV/tms.git
 ```
 
 # How to build
