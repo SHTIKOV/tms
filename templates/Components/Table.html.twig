@@ -84,7 +84,8 @@
     <!-- /ko -->
     <!-- ko ifnot: data().length -->
     
-    <h3 class="justify-content-center" style="text-align: center;">Data not found</h3>
+    <h3 class="justify-content-center" style="text-align: center;"
+        data-bind="text: notFoundText">Data not found</h3>
     <!-- ko template: { name: paginationTemplate, data: $data } --><!-- /ko -->
     <!-- /ko -->
 </div>
@@ -159,6 +160,7 @@
                 perPage: 3,
                 currentPage: 1,
                 total: 0,
+                notFoundText: 'Data not found',
                 rowTemplate: 'table-component-row-template',
                 paginationTemplate: 'table-component-pagination-template',
                 loadUrl: '',

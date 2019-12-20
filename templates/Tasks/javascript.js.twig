@@ -153,7 +153,8 @@
                     {name: 'Created',     field: 'task.created',     sort: true,  width: '150px'},
                     {name: 'Action',      field: '',                 sort: false, width: '200px', align: 'right'},
                 ],
-                loadUrl: '/tasks/load'
+                loadUrl: '/tasks/load',
+                notFoundText: 'Please add a tasks'
             }, {
                 addMethod: function () {
                     let task = new Task ();
